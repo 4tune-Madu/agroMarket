@@ -1,0 +1,27 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+<h1>Seller Dashboard</h1>
+
+<p>Welcome, {{ request.user.email }}</p>
+
+<hr>
+
+<h3>Quick Actions</h3>
+
+<ul>
+    <li><a href="#">Add Product</a></li>
+    <li><a href="#">View My Products</a></li>
+    <li><a href="#">View Orders</a></li>
+</ul>
+
+<hr>
+
+<h3>Summary</h3>
+
+<p>Total Products: 0</p>
+<p>Total Orders: 0</p>
+<p>Total Sales: ₦0</p>
+
+{% endblock %}
