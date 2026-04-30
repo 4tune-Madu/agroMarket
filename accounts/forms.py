@@ -32,3 +32,27 @@ from django.contrib.auth.forms import AuthenticationForm
 
 class LoginForm(AuthenticationForm):
     username = forms.EmailField(label="Email")
+
+from django import forms
+from .models import User
+
+class CompleteProfileForm(forms.ModelForm):
+    first_name = forms.CharField(max_length=50, required=True)
+    last_name = forms.CharField(max_length=50, required=True)
+    phone = forms.CharField(max_length=15, required=True)
+    category = forms.ChoiceField(choices=[
+        ('grains', 'Grains & Cereals'),
+        ('vegetables', 'Vegetables'),
+        ('fruits', 'Fruits'),
+        ('livestock', 'Livestock'),
+        ('dairy', 'Dairy & Eggs'),
+        ('other', 'Other'),
+    ], required=True)
+    consent = forms.BooleanField(
+        required=True,
+        label='I agree to the Terms of Service and Privacy Policy'
+    )
+
+    class Meta:
+        model = User
+        fields = ['first_name', 'last_name', 'phone']

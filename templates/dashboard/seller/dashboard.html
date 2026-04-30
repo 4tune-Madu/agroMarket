@@ -1,27 +1,856 @@
 {% extends "base.html" %}
+{% load static %}
+{% block title %}Seller Dashboard — AgroMart{% endblock %}
+
+{% block extra_styles %}
+
+/* ═══════════════════════════════════════════
+   DASHBOARD SHELL
+═══════════════════════════════════════════ */
+.dash-page {
+  display: flex;
+  min-height: 100vh;
+  padding-top: var(--nav-h);
+}
+
+/* ─── SIDEBAR ─── */
+.dash-sidebar {
+  width: 260px;
+  flex-shrink: 0;
+  background: var(--ink-s);
+  border-right: 1px solid var(--bd);
+  display: flex;
+  flex-direction: column;
+  position: fixed;
+  top: var(--nav-h);
+  left: 0;
+  bottom: 0;
+  overflow-y: auto;
+  z-index: 100;
+  transition: transform .4s var(--expo);
+}
+.dash-sidebar::-webkit-scrollbar { width: 2px; }
+
+.sidebar-profile {
+  padding: 28px 24px 20px;
+  border-bottom: 1px solid var(--bd);
+}
+.sidebar-ava {
+  width: 48px; height: 48px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, var(--grove), var(--leaf));
+  display: flex; align-items: center; justify-content: center;
+  font-size: 1.3rem;
+  margin-bottom: 12px;
+}
+.sidebar-name {
+  font-weight: 600;
+  font-size: .95rem;
+  margin-bottom: 3px;
+  color: var(--text);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.sidebar-email {
+  font-size: .72rem;
+  font-family: var(--mono);
+  color: var(--t40);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.sidebar-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  margin-top: 10px;
+  padding: 4px 10px;
+  background: rgba(197,241,53,.1);
+  border: 1px solid rgba(197,241,53,.25);
+  border-radius: 100px;
+  font-size: .63rem;
+  font-family: var(--mono);
+  color: var(--acid);
+  text-transform: uppercase;
+  letter-spacing: .08em;
+}
+
+/* Nav groups */
+.sidebar-nav { flex: 1; padding: 16px 12px; }
+.sidebar-group { margin-bottom: 28px; }
+.sidebar-group-label {
+  font-family: var(--mono);
+  font-size: .6rem;
+  text-transform: uppercase;
+  letter-spacing: .16em;
+  color: var(--t40);
+  padding: 0 12px;
+  margin-bottom: 6px;
+}
+.sidebar-link {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 12px;
+  border-radius: var(--r-md);
+  font-size: .875rem;
+  font-weight: 500;
+  color: var(--t70) !important;
+  transition: background .2s, color .2s;
+  text-decoration: none !important;
+  position: relative;
+}
+.sidebar-link:hover { background: rgba(255,255,255,.07); color: var(--text) !important; }
+.sidebar-link.active {
+  background: rgba(197,241,53,.1);
+  color: var(--acid) !important;
+}
+.sidebar-link.active::before {
+  content: '';
+  position: absolute;
+  left: 0; top: 20%; bottom: 20%;
+  width: 3px;
+  background: var(--acid);
+  border-radius: 0 2px 2px 0;
+}
+.sidebar-link-ico { font-size: 1rem; width: 20px; text-align: center; flex-shrink: 0; }
+.sidebar-link-badge {
+  margin-left: auto;
+  padding: 2px 7px;
+  background: var(--acid);
+  color: var(--ink);
+  border-radius: 100px;
+  font-family: var(--mono);
+  font-size: .6rem;
+  font-weight: 700;
+}
+
+.sidebar-footer {
+  padding: 16px 12px;
+  border-top: 1px solid var(--bd);
+}
+
+/* ─── MAIN CONTENT ─── */
+.dash-main {
+  flex: 1;
+  margin-left: 260px;
+  padding: 48px 52px;
+  min-height: calc(100vh - var(--nav-h));
+}
+
+/* Page header */
+.dash-header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  margin-bottom: 40px;
+  flex-wrap: wrap;
+  gap: 20px;
+  animation: dashIn .7s var(--expo) both;
+}
+@keyframes dashIn { from { opacity:0; transform:translateY(20px); } to { opacity:1; transform:translateY(0); } }
+
+.dash-header-left .eyebrow { display: flex; margin-bottom: 10px; }
+.dash-title {
+  font-family: var(--serif);
+  font-size: clamp(1.8rem, 3vw, 2.6rem);
+  font-weight: 900;
+  letter-spacing: -.03em;
+  line-height: 1.1;
+  color: var(--text);
+}
+.dash-subtitle {
+  font-size: .88rem;
+  color: var(--t40);
+  margin-top: 6px;
+}
+.dash-header-actions { display: flex; gap: 10px; flex-wrap: wrap; align-items: center; }
+
+/* ─── STAT CARDS ─── */
+.stat-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 16px;
+  margin-bottom: 36px;
+}
+.stat-card {
+  background: rgba(255,255,255,.04);
+  border: 1px solid var(--bd);
+  border-radius: var(--r-xl);
+  padding: 24px 22px;
+  position: relative;
+  overflow: hidden;
+  transition: border-color .3s, transform .35s var(--expo), box-shadow .35s;
+  animation: dashIn .7s var(--expo) both;
+}
+.stat-card:hover { border-color: var(--bd-h); transform: translateY(-4px); box-shadow: 0 16px 40px rgba(0,0,0,.35); }
+.stat-card::before {
+  content: '';
+  position: absolute;
+  top: 0; right: 0;
+  width: 80px; height: 80px;
+  background: radial-gradient(circle at top right, var(--glow, rgba(197,241,53,.07)), transparent 70%);
+  pointer-events: none;
+}
+.stat-card.green  { --glow: rgba(61,156,71,.1); }
+.stat-card.gold   { --glow: rgba(212,168,67,.1); }
+.stat-card.blue   { --glow: rgba(60,120,200,.08); }
+.stat-card.rust   { --glow: rgba(200,92,56,.08); }
+
+.stat-icon {
+  font-size: 1.4rem;
+  margin-bottom: 16px;
+  display: block;
+}
+.stat-label {
+  font-family: var(--mono);
+  font-size: .63rem;
+  text-transform: uppercase;
+  letter-spacing: .12em;
+  color: var(--t40);
+  margin-bottom: 8px;
+}
+.stat-value {
+  font-family: var(--serif);
+  font-size: 2rem;
+  font-weight: 900;
+  color: var(--text);
+  line-height: 1;
+  margin-bottom: 10px;
+}
+.stat-delta {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  font-size: .72rem;
+  font-family: var(--mono);
+  padding: 3px 8px;
+  border-radius: 100px;
+}
+.stat-delta.up   { background: rgba(61,156,71,.15); color: var(--leaf); }
+.stat-delta.down { background: rgba(200,92,56,.12); color: var(--rust); }
+.stat-delta.flat { background: rgba(255,255,255,.06); color: var(--t40); }
+
+/* ─── TWO-COL GRID ─── */
+.dash-grid-2 {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 20px;
+  margin-bottom: 24px;
+}
+.dash-grid-3-1 {
+  display: grid;
+  grid-template-columns: 2fr 1fr;
+  gap: 20px;
+  margin-bottom: 24px;
+}
+
+/* Panel card */
+.panel {
+  background: rgba(255,255,255,.04);
+  border: 1px solid var(--bd);
+  border-radius: var(--r-xl);
+  overflow: hidden;
+  animation: dashIn .7s var(--expo) both;
+}
+.panel-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 20px 24px;
+  border-bottom: 1px solid var(--bd);
+}
+.panel-head h3 {
+  font-family: var(--serif);
+  font-size: 1.05rem;
+  font-weight: 700;
+  color: var(--text);
+}
+.panel-head-right { display: flex; align-items: center; gap: 8px; }
+.panel-link {
+  font-family: var(--mono);
+  font-size: .68rem;
+  text-transform: uppercase;
+  letter-spacing: .1em;
+  color: var(--acid) !important;
+  transition: opacity .2s;
+  text-decoration: none !important;
+}
+.panel-link:hover { opacity: .7; }
+.panel-body { padding: 20px 24px; }
+
+/* ─── QUICK ACTIONS ─── */
+.quick-actions {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+  padding: 20px 24px;
+}
+.qa-btn {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 14px 16px;
+  background: rgba(255,255,255,.04);
+  border: 1px solid var(--bd);
+  border-radius: var(--r-lg);
+  font-size: .86rem;
+  font-weight: 600;
+  color: var(--t70) !important;
+  text-decoration: none !important;
+  transition: background .25s, border-color .25s, color .25s, transform .3s var(--expo);
+  cursor: none;
+}
+.qa-btn:hover {
+  background: rgba(197,241,53,.08);
+  border-color: var(--bd-h);
+  color: var(--text) !important;
+  transform: translateY(-2px);
+}
+.qa-btn-ico {
+  width: 34px; height: 34px;
+  border-radius: var(--r-md);
+  background: rgba(255,255,255,.06);
+  display: flex; align-items: center; justify-content: center;
+  font-size: 1rem;
+  flex-shrink: 0;
+  transition: background .25s;
+}
+.qa-btn:hover .qa-btn-ico { background: var(--acid-dim); }
+.qa-btn span { line-height: 1.3; }
+.qa-btn small { display: block; font-size: .7rem; font-weight: 400; color: var(--t40); margin-top: 1px; }
+
+/* ─── ORDERS TABLE ─── */
+.orders-table { width: 100%; border-collapse: collapse; }
+.orders-table th {
+  font-family: var(--mono);
+  font-size: .62rem;
+  text-transform: uppercase;
+  letter-spacing: .12em;
+  color: var(--t40);
+  padding: 0 16px 12px;
+  text-align: left;
+  border-bottom: 1px solid var(--bd);
+}
+.orders-table th:last-child { text-align: right; }
+.orders-table td {
+  padding: 14px 16px;
+  font-size: .875rem;
+  border-bottom: 1px solid rgba(255,255,255,.04);
+  color: var(--t70);
+  vertical-align: middle;
+}
+.orders-table tr:last-child td { border-bottom: none; }
+.orders-table tr:hover td { background: rgba(255,255,255,.03); color: var(--text); }
+.orders-table td:last-child { text-align: right; }
+
+.order-id { font-family: var(--mono); font-size: .78rem; color: var(--acid) !important; }
+.order-product { font-weight: 600; color: var(--text); }
+.order-product small { display: block; font-size: .72rem; font-weight: 400; color: var(--t40); margin-top: 2px; }
+
+.status-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  padding: 4px 10px;
+  border-radius: 100px;
+  font-family: var(--mono);
+  font-size: .62rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: .06em;
+  white-space: nowrap;
+}
+.status-badge::before { content: ''; width: 5px; height: 5px; border-radius: 50%; background: currentColor; }
+.status-pending  { background: rgba(212,168,67,.12); color: var(--gold); }
+.status-paid     { background: rgba(61,156,71,.12);  color: var(--leaf); }
+.status-shipped  { background: rgba(60,120,200,.12); color: #6db3f2; }
+.status-delivered{ background: rgba(197,241,53,.12); color: var(--acid); }
+.status-cancelled{ background: rgba(200,92,56,.12);  color: var(--rust); }
+
+.order-amount { font-family: var(--mono); font-size: .88rem; font-weight: 700; color: var(--text); }
+
+/* ─── PRODUCT LIST ─── */
+.product-row {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding: 12px 0;
+  border-bottom: 1px solid rgba(255,255,255,.04);
+}
+.product-row:last-child { border-bottom: none; }
+.product-row-img {
+  width: 46px; height: 46px;
+  border-radius: var(--r-md);
+  background: var(--forest);
+  background-size: cover;
+  background-position: center;
+  flex-shrink: 0;
+}
+.product-row-info { flex: 1; min-width: 0; }
+.product-row-name { font-size: .875rem; font-weight: 600; color: var(--text); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.product-row-meta { font-size: .72rem; color: var(--t40); font-family: var(--mono); margin-top: 2px; }
+.product-row-price { font-family: var(--mono); font-size: .85rem; font-weight: 700; color: var(--acid); white-space: nowrap; margin-right: 12px; }
+.product-row-actions { display: flex; gap: 6px; }
+.icon-btn {
+  width: 30px; height: 30px;
+  border-radius: var(--r-sm);
+  background: rgba(255,255,255,.06);
+  border: 1px solid var(--bd);
+  display: flex; align-items: center; justify-content: center;
+  font-size: .78rem; cursor: none;
+  transition: background .2s, border-color .2s;
+  color: var(--t70);
+}
+.icon-btn:hover { background: rgba(255,255,255,.14); border-color: rgba(255,255,255,.2); }
+.icon-btn.danger:hover { background: rgba(200,92,56,.15); border-color: rgba(200,92,56,.3); color: var(--rust); }
+
+/* ─── EMPTY STATE ─── */
+.empty-state {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 52px 24px;
+  text-align: center;
+}
+.empty-ico { font-size: 2.8rem; margin-bottom: 16px; opacity: .5; }
+.empty-state h4 { font-family: var(--serif); font-size: 1.1rem; font-weight: 700; margin-bottom: 8px; }
+.empty-state p { font-size: .85rem; color: var(--t40); line-height: 1.6; max-width: 240px; margin-bottom: 20px; }
+
+/* ─── REVENUE CHART BAR (pure CSS) ─── */
+.chart-wrap { padding: 4px 0 0; }
+.chart-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 10px;
+}
+.chart-label { font-family: var(--mono); font-size: .65rem; color: var(--t40); width: 28px; text-align: right; flex-shrink: 0; }
+.chart-bar-track { flex: 1; height: 8px; background: rgba(255,255,255,.06); border-radius: 100px; overflow: hidden; }
+.chart-bar-fill { height: 100%; border-radius: 100px; background: linear-gradient(90deg, var(--grove), var(--acid)); transition: width 1.2s var(--expo); }
+.chart-val { font-family: var(--mono); font-size: .65rem; color: var(--t40); width: 56px; text-align: right; flex-shrink: 0; }
+
+/* ─── TIPS CARD ─── */
+.tip-list { display: flex; flex-direction: column; gap: 10px; }
+.tip-item {
+  display: flex;
+  gap: 12px;
+  padding: 12px;
+  background: rgba(255,255,255,.03);
+  border: 1px solid var(--bd);
+  border-radius: var(--r-md);
+  transition: border-color .2s;
+}
+.tip-item:hover { border-color: var(--bd-h); }
+.tip-ico { font-size: 1.1rem; flex-shrink: 0; margin-top: 1px; }
+.tip-text strong { display: block; font-size: .84rem; font-weight: 600; margin-bottom: 3px; }
+.tip-text p { font-size: .78rem; color: var(--t40); line-height: 1.55; }
+
+/* ─── NOTIFICATION DOT ─── */
+.notif-dot { width: 7px; height: 7px; background: var(--rust); border-radius: 50%; display: inline-block; margin-left: 4px; }
+
+/* ─── RESPONSIVE ─── */
+@media(max-width:1200px) {
+  .stat-grid { grid-template-columns: repeat(2, 1fr); }
+  .dash-grid-3-1 { grid-template-columns: 1fr; }
+}
+@media(max-width:900px) {
+  .dash-sidebar { transform: translateX(-100%); }
+  .dash-sidebar.mobile-open { transform: translateX(0); }
+  .dash-main { margin-left: 0; padding: 32px 24px; }
+  .dash-grid-2 { grid-template-columns: 1fr; }
+  .stat-grid { grid-template-columns: 1fr 1fr; }
+  .quick-actions { grid-template-columns: 1fr; }
+}
+@media(max-width:480px) {
+  .stat-grid { grid-template-columns: 1fr; }
+}
+
+/* Stagger delays for stat cards */
+.stat-card:nth-child(1){animation-delay:.05s}
+.stat-card:nth-child(2){animation-delay:.12s}
+.stat-card:nth-child(3){animation-delay:.19s}
+.stat-card:nth-child(4){animation-delay:.26s}
+.panel:nth-child(1){animation-delay:.1s}
+.panel:nth-child(2){animation-delay:.18s}
+{% endblock %}
 
 {% block content %}
+<div class="dash-page">
 
-<h1>Seller Dashboard</h1>
+  <!-- ══ SIDEBAR ══ -->
+  <aside class="dash-sidebar" id="dashSidebar">
 
-<p>Welcome, {{ request.user.email }}</p>
+    <div class="sidebar-profile">
+      <div class="sidebar-ava">👨‍🌾</div>
+      <div class="sidebar-name">{{ request.user.get_full_name|default:request.user.username }}</div>
+      <div class="sidebar-email">{{ request.user.email }}</div>
+      <span class="sidebar-badge">✓ Verified Seller</span>
+    </div>
 
-<hr>
+    <nav class="sidebar-nav">
 
-<h3>Quick Actions</h3>
+      <div class="sidebar-group">
+        <div class="sidebar-group-label">Overview</div>
+        <a href="#" class="sidebar-link active">
+          <span class="sidebar-link-ico">📊</span> Dashboard
+        </a>
+        <a href="#" class="sidebar-link">
+          <span class="sidebar-link-ico">📈</span> Analytics
+        </a>
+      </div>
 
-<ul>
-    <li><a href="#">Add Product</a></li>
-    <li><a href="#">View My Products</a></li>
-    <li><a href="#">View Orders</a></li>
-</ul>
+      <div class="sidebar-group">
+        <div class="sidebar-group-label">Store</div>
+        <a href="/products/add/" class="sidebar-link">
+          <span class="sidebar-link-ico">➕</span> Add Product
+        </a>
+        <a href="/products/my-products/" class="sidebar-link">
+          <span class="sidebar-link-ico">📦</span> My Products
+          {% if total_products %}
+          <span class="sidebar-link-badge">{{ total_products }}</span>
+          {% endif %}
+        </a>
+        <a href="#" class="sidebar-link">
+          <span class="sidebar-link-ico">🗂️</span> Categories
+        </a>
+      </div>
 
-<hr>
+      <div class="sidebar-group">
+        <div class="sidebar-group-label">Orders</div>
+        <a href="#" class="sidebar-link">
+          <span class="sidebar-link-ico">🛒</span> All Orders
+          {% if pending_orders %}
+          <span class="sidebar-link-badge">{{ pending_orders }}</span>
+          {% endif %}
+        </a>
+        <a href="#" class="sidebar-link">
+          <span class="sidebar-link-ico">🚚</span> Shipped
+        </a>
+        <a href="#" class="sidebar-link">
+          <span class="sidebar-link-ico">✅</span> Delivered
+        </a>
+      </div>
 
-<h3>Summary</h3>
+      <div class="sidebar-group">
+        <div class="sidebar-group-label">Finance</div>
+        <a href="#" class="sidebar-link">
+          <span class="sidebar-link-ico">💰</span> Earnings
+        </a>
+        <a href="#" class="sidebar-link">
+          <span class="sidebar-link-ico">🏦</span> Payouts
+        </a>
+        <a href="#" class="sidebar-link">
+          <span class="sidebar-link-ico">⟡</span> Apply for Funding
+        </a>
+      </div>
 
-<p>Total Products: 0</p>
-<p>Total Orders: 0</p>
-<p>Total Sales: ₦0</p>
+      <div class="sidebar-group">
+        <div class="sidebar-group-label">Account</div>
+        <a href="#" class="sidebar-link">
+          <span class="sidebar-link-ico">👤</span> My Profile
+        </a>
+        <a href="#" class="sidebar-link">
+          <span class="sidebar-link-ico">⚙️</span> Settings
+        </a>
+      </div>
 
+    </nav>
+
+    <div class="sidebar-footer">
+      <a href="{% url 'logout' %}" class="sidebar-link" style="color:var(--rust) !important">
+        <span class="sidebar-link-ico">←</span> Log Out
+      </a>
+    </div>
+
+  </aside>
+
+  <!-- ══ MAIN ══ -->
+  <main class="dash-main">
+
+    <!-- Header -->
+    <div class="dash-header">
+      <div class="dash-header-left">
+        <div class="eyebrow">Seller Dashboard</div>
+        <h1 class="dash-title">
+          Good {{ greeting }}, {{ request.user.get_short_name|default:request.user.username }} 👋
+        </h1>
+        <p class="dash-subtitle">
+          Here's what's happening with your store today.
+        </p>
+      </div>
+      <div class="dash-header-actions">
+        <a href="#" class="btn btn-ghost" style="padding:10px 20px;font-size:.85rem">📊 View Reports</a>
+        <a href="/products/add/" class="btn btn-green" style="padding:10px 20px;font-size:.85rem">+ Add Product</a>
+      </div>
+    </div>
+
+    <!-- Stat Cards -->
+    <div class="stat-grid">
+
+      <div class="stat-card green">
+        <span class="stat-icon">📦</span>
+        <div class="stat-label">Total Products</div>
+        <div class="stat-value" data-count="{{ total_products|default:0 }}">{{ total_products|default:0 }}</div>
+        <span class="stat-delta flat">— No change</span>
+      </div>
+
+      <div class="stat-card gold">
+        <span class="stat-icon">🛒</span>
+        <div class="stat-label">Total Orders</div>
+        <div class="stat-value" data-count="{{ total_orders|default:0 }}">{{ total_orders|default:0 }}</div>
+        <span class="stat-delta flat">— No orders yet</span>
+      </div>
+
+      <div class="stat-card blue">
+        <span class="stat-icon">💰</span>
+        <div class="stat-label">Total Sales</div>
+        <div class="stat-value">₦{{ total_sales|default:"0" }}</div>
+        <span class="stat-delta flat">— This month</span>
+      </div>
+
+      <div class="stat-card rust">
+        <span class="stat-icon">⏳</span>
+        <div class="stat-label">Pending Orders</div>
+        <div class="stat-value" data-count="{{ pending_orders|default:0 }}">{{ pending_orders|default:0 }}</div>
+        <span class="stat-delta {% if pending_orders %}up{% else %}flat{% endif %}">
+          {% if pending_orders %}↑ Needs attention{% else %}— All clear{% endif %}
+        </span>
+      </div>
+
+    </div>
+
+    <!-- Row 1: Orders + Quick Actions -->
+    <div class="dash-grid-3-1">
+
+      <!-- Recent Orders -->
+      <div class="panel">
+        <div class="panel-head">
+          <h3>Recent Orders</h3>
+          <div class="panel-head-right">
+            <a href="#" class="panel-link">View All →</a>
+          </div>
+        </div>
+
+        {% if recent_orders %}
+        <div style="overflow-x:auto">
+          <table class="orders-table">
+            <thead>
+              <tr>
+                <th>Order ID</th>
+                <th>Product</th>
+                <th>Customer</th>
+                <th>Status</th>
+                <th>Amount</th>
+              </tr>
+            </thead>
+            <tbody>
+              {% for order in recent_orders %}
+              <tr>
+                <td><span class="order-id">#{{ order.id }}</span></td>
+                <td>
+                  <span class="order-product">
+                    {{ order.product.name }}
+                    <small>{{ order.quantity }} × {{ order.product.unit }}</small>
+                  </span>
+                </td>
+                <td>{{ order.buyer.get_short_name|default:order.buyer.username }}</td>
+                <td><span class="status-badge status-{{ order.status }}">{{ order.status }}</span></td>
+                <td><span class="order-amount">₦{{ order.total }}</span></td>
+              </tr>
+              {% endfor %}
+            </tbody>
+          </table>
+        </div>
+        {% else %}
+        <!-- Empty state -->
+        <div class="empty-state">
+          <div class="empty-ico">🛒</div>
+          <h4>No orders yet</h4>
+          <p>Once buyers start placing orders your recent activity will appear here.</p>
+          <a href="/products/add/" class="btn btn-green" style="padding:10px 22px;font-size:.85rem">+ Add Your First Product</a>
+        </div>
+        {% endif %}
+      </div>
+
+      <!-- Quick Actions -->
+      <div class="panel">
+        <div class="panel-head">
+          <h3>Quick Actions</h3>
+        </div>
+        <div class="quick-actions">
+          <a href="/products/add/" class="qa-btn">
+            <div class="qa-btn-ico">➕</div>
+            <span>Add Product<small>List a new item</small></span>
+          </a>
+          <a href="/products/my-products/" class="qa-btn">
+            <div class="qa-btn-ico">📦</div>
+            <span>My Products<small>Manage stock</small></span>
+          </a>
+          <a href="#" class="qa-btn">
+            <div class="qa-btn-ico">🛒</div>
+            <span>View Orders<small>Manage orders</small></span>
+          </a>
+          <a href="#" class="qa-btn">
+            <div class="qa-btn-ico">💰</div>
+            <span>Earnings<small>View payouts</small></span>
+          </a>
+          <a href="#" class="qa-btn">
+            <div class="qa-btn-ico">📊</div>
+            <span>Analytics<small>Sales reports</small></span>
+          </a>
+          <a href="#" class="qa-btn">
+            <div class="qa-btn-ico">⟡</div>
+            <span>Get Funded<small>Apply for capital</small></span>
+          </a>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- Row 2: Products + Chart + Tips -->
+    <div class="dash-grid-2">
+
+      <!-- My Products (preview) -->
+      <div class="panel">
+        <div class="panel-head">
+          <h3>My Products</h3>
+          <div class="panel-head-right">
+            <a href="/products/add/" class="btn btn-green" style="padding:7px 16px;font-size:.78rem">+ Add</a>
+            <a href="/products/my-products/" class="panel-link">View All →</a>
+          </div>
+        </div>
+        <div class="panel-body">
+          {% if my_products %}
+            {% for product in my_products %}
+            <div class="product-row">
+              <div class="product-row-img"
+                {% if product.image %}style="background-image:url('{{ product.image.url }}')"{% endif %}>
+              </div>
+              <div class="product-row-info">
+                <div class="product-row-name">{{ product.name }}</div>
+                <div class="product-row-meta">{{ product.category }} · {{ product.quantity }} {{ product.unit }} left</div>
+              </div>
+              <span class="product-row-price">₦{{ product.price }}</span>
+              <div class="product-row-actions">
+                <a href="/products/{{ product.id }}/edit/" class="icon-btn" title="Edit">✏️</a>
+                <a href="/products/{{ product.id }}/delete/" class="icon-btn danger" title="Delete">🗑️</a>
+              </div>
+            </div>
+            {% endfor %}
+          {% else %}
+          <div class="empty-state" style="padding:36px 16px">
+            <div class="empty-ico">📦</div>
+            <h4>No products yet</h4>
+            <p>Add your first product to start selling on AgroMart.</p>
+            <a href="/products/add/" class="btn btn-green" style="padding:10px 22px;font-size:.85rem">+ Add Product</a>
+          </div>
+          {% endif %}
+        </div>
+      </div>
+
+      <!-- Right col: Revenue chart + Tips -->
+      <div style="display:flex;flex-direction:column;gap:20px">
+
+        <!-- Revenue (CSS bar chart) -->
+        <div class="panel">
+          <div class="panel-head">
+            <h3>Revenue — Last 7 Days</h3>
+          </div>
+          <div class="panel-body">
+            <div class="chart-wrap" id="revenueChart">
+              {% if weekly_revenue %}
+                {% for day in weekly_revenue %}
+                <div class="chart-row">
+                  <span class="chart-label">{{ day.label }}</span>
+                  <div class="chart-bar-track">
+                    <div class="chart-bar-fill" data-pct="{{ day.pct }}" style="width:0%"></div>
+                  </div>
+                  <span class="chart-val">₦{{ day.amount }}</span>
+                </div>
+                {% endfor %}
+              {% else %}
+              <!-- Static empty-state chart rows (no data yet) -->
+              {% for label in "Mon,Tue,Wed,Thu,Fri,Sat,Sun"|default:"Mon,Tue,Wed,Thu,Fri,Sat,Sun" %}{% endfor %}
+              <div class="chart-row"><span class="chart-label">Mon</span><div class="chart-bar-track"><div class="chart-bar-fill" data-pct="0" style="width:0%"></div></div><span class="chart-val">₦0</span></div>
+              <div class="chart-row"><span class="chart-label">Tue</span><div class="chart-bar-track"><div class="chart-bar-fill" data-pct="0" style="width:0%"></div></div><span class="chart-val">₦0</span></div>
+              <div class="chart-row"><span class="chart-label">Wed</span><div class="chart-bar-track"><div class="chart-bar-fill" data-pct="0" style="width:0%"></div></div><span class="chart-val">₦0</span></div>
+              <div class="chart-row"><span class="chart-label">Thu</span><div class="chart-bar-track"><div class="chart-bar-fill" data-pct="0" style="width:0%"></div></div><span class="chart-val">₦0</span></div>
+              <div class="chart-row"><span class="chart-label">Fri</span><div class="chart-bar-track"><div class="chart-bar-fill" data-pct="0" style="width:0%"></div></div><span class="chart-val">₦0</span></div>
+              <div class="chart-row"><span class="chart-label">Sat</span><div class="chart-bar-track"><div class="chart-bar-fill" data-pct="0" style="width:0%"></div></div><span class="chart-val">₦0</span></div>
+              <div class="chart-row"><span class="chart-label">Sun</span><div class="chart-bar-track"><div class="chart-bar-fill" data-pct="0" style="width:0%"></div></div><span class="chart-val">₦0</span></div>
+              <div class="empty-state" style="padding:20px 8px 4px">
+                <div class="empty-ico" style="font-size:1.6rem">📈</div>
+                <p style="max-width:180px">Sales data will appear here once you receive orders.</p>
+              </div>
+              {% endif %}
+          </div>
+        </div>
+
+        <!-- Seller Tips -->
+        <div class="panel">
+          <div class="panel-head">
+            <h3>Seller Tips 💡</h3>
+          </div>
+          <div class="panel-body">
+            <div class="tip-list">
+              <div class="tip-item">
+                <span class="tip-ico">📸</span>
+                <div class="tip-text">
+                  <strong>Add quality photos</strong>
+                  <p>Products with clear images get 3× more clicks than those without.</p>
+                </div>
+              </div>
+              <div class="tip-item">
+                <span class="tip-ico">⚡</span>
+                <div class="tip-text">
+                  <strong>Respond quickly</strong>
+                  <p>Sellers who confirm orders within 2 hours get featured placement.</p>
+                </div>
+              </div>
+              <div class="tip-item">
+                <span class="tip-ico">⟡</span>
+                <div class="tip-text">
+                  <strong>Apply for farm funding</strong>
+                  <p>Verified sellers can apply for growth capital through AgroMart Invest.</p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+  </main>
+</div>
+{% endblock %}
+
+{% block extra_scripts %}
+<script>
+(()=>{
+  /* Greeting */
+  const h = new Date().getHours();
+  const greet = h < 12 ? 'morning' : h < 17 ? 'afternoon' : 'evening';
+  document.querySelectorAll('.dash-title').forEach(el => {
+    el.innerHTML = el.innerHTML.replace('{{ greeting }}', greet);
+  });
+
+  /* Animate chart bars on load */
+  setTimeout(() => {
+    document.querySelectorAll('.chart-bar-fill[data-pct]').forEach(bar => {
+      bar.style.width = bar.dataset.pct + '%';
+    });
+  }, 400);
+
+  /* Mobile sidebar toggle (wired to hamburger in base) */
+  const sidebar = document.getElementById('dashSidebar');
+  const ham = document.getElementById('hamburger');
+  if (ham && sidebar) {
+    ham.addEventListener('click', () => sidebar.classList.toggle('mobile-open'));
+  }
+})();
+</script>
 {% endblock %}

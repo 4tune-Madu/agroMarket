@@ -5,6 +5,14 @@ from django.shortcuts import render, redirect
 from django.contrib.auth import login
 from .forms import RegisterForm
 from django.contrib.auth import get_user_model
+from django.shortcuts import render, redirect
+from .forms import RegisterForm
+from django.contrib.auth import get_user_model
+
+from django.shortcuts import render, redirect
+from .forms import RegisterForm
+from django.contrib.auth import get_user_model
+from accounts.models import Profile  # 👈 add this
 
 User = get_user_model()
 
@@ -27,12 +35,21 @@ def register_view(request):
             user.is_buyer = True
 
         user.save()
-        login(request, user)
 
-        return redirect('home')
+        # ✅ safer: ensure profile exists
+        profile, created = Profile.objects.get_or_create(user=user)
+
+        profile.role = role
+
+        # auto approve buyers
+        if role == "buyer":
+            profile.is_approved = True
+
+        profile.save()
+
+        return redirect('login')
 
     return render(request, 'accounts/register.html', {'form': form})
-
 
 from django.contrib.auth import authenticate, login
 from .forms import LoginForm
@@ -50,7 +67,7 @@ def login_view(request):
         elif user.is_seller:
             return redirect('seller_dashboard')
         else:
-            return redirect('home')
+            return redirect('buyer_home')
 
     return render(request, 'accounts/login.html', {'form': form})
 
@@ -60,3 +77,25 @@ from django.contrib.auth import logout
 def logout_view(request):
     logout(request)
     return redirect('home')
+
+from django.contrib.auth.decorators import login_required
+from django.shortcuts import render, redirect
+from .forms import CompleteProfileForm
+
+@login_required
+def complete_profile(request):
+    # Skip if already completed
+    if request.user.profile_completed:
+        return redirect('seller_dashboard')
+
+    if request.method == 'POST':
+        form = CompleteProfileForm(request.POST, instance=request.user)
+        if form.is_valid():
+            user = form.save(commit=False)
+            user.profile_completed = True
+            user.save()
+            return redirect('seller_dashboard')
+    else:
+        form = CompleteProfileForm(instance=request.user)
+
+    return render(request, 'accounts/complete_profile.html', {'form': form})

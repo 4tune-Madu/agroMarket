@@ -1,0 +1,628 @@
+{% extends "base.html" %}
+{% load static %}
+{% block title %}Add Product — AgroMart{% endblock %}
+
+{% block extra_styles %}
+
+/* ═══════════════════════════════════════════
+   ADD PRODUCT PAGE
+═══════════════════════════════════════════ */
+.ap-page {
+  display: flex;
+  min-height: 100vh;
+  padding-top: var(--nav-h);
+}
+
+/* ─── SIDEBAR (reuse seller dash sidebar styles) ─── */
+.dash-sidebar {
+  width: 260px; flex-shrink: 0;
+  background: var(--ink-s);
+  border-right: 1px solid var(--bd);
+  display: flex; flex-direction: column;
+  position: fixed; top: var(--nav-h); left: 0; bottom: 0;
+  overflow-y: auto; z-index: 100;
+}
+.dash-sidebar::-webkit-scrollbar { width: 2px; }
+.sidebar-profile { padding: 28px 24px 20px; border-bottom: 1px solid var(--bd); }
+.sidebar-ava { width: 48px; height: 48px; border-radius: 50%; background: linear-gradient(135deg,var(--grove),var(--leaf)); display: flex; align-items: center; justify-content: center; font-size: 1.3rem; margin-bottom: 12px; }
+.sidebar-name { font-weight: 600; font-size: .95rem; margin-bottom: 3px; color: var(--text); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.sidebar-email { font-size: .72rem; font-family: var(--mono); color: var(--t40); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.sidebar-badge { display: inline-flex; align-items: center; gap: 5px; margin-top: 10px; padding: 4px 10px; background: rgba(197,241,53,.1); border: 1px solid rgba(197,241,53,.25); border-radius: 100px; font-size: .63rem; font-family: var(--mono); color: var(--acid); text-transform: uppercase; letter-spacing: .08em; }
+.sidebar-nav { flex: 1; padding: 16px 12px; }
+.sidebar-group { margin-bottom: 28px; }
+.sidebar-group-label { font-family: var(--mono); font-size: .6rem; text-transform: uppercase; letter-spacing: .16em; color: var(--t40); padding: 0 12px; margin-bottom: 6px; }
+.sidebar-link { display: flex; align-items: center; gap: 10px; padding: 10px 12px; border-radius: var(--r-md); font-size: .875rem; font-weight: 500; color: var(--t70) !important; transition: background .2s, color .2s; text-decoration: none !important; position: relative; }
+.sidebar-link:hover { background: rgba(255,255,255,.07); color: var(--text) !important; }
+.sidebar-link.active { background: rgba(197,241,53,.1); color: var(--acid) !important; }
+.sidebar-link.active::before { content: ''; position: absolute; left: 0; top: 20%; bottom: 20%; width: 3px; background: var(--acid); border-radius: 0 2px 2px 0; }
+.sidebar-link-ico { font-size: 1rem; width: 20px; text-align: center; flex-shrink: 0; }
+.sidebar-footer { padding: 16px 12px; border-top: 1px solid var(--bd); }
+
+/* ─── MAIN ─── */
+.ap-main {
+  flex: 1;
+  margin-left: 260px;
+  padding: 48px 52px;
+}
+
+/* Page header */
+.ap-header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  margin-bottom: 40px;
+  flex-wrap: wrap;
+  gap: 16px;
+  animation: apIn .7s var(--expo) both;
+}
+@keyframes apIn { from { opacity:0; transform:translateY(20px); } to { opacity:1; transform:translateY(0); } }
+.ap-header-left .eyebrow { display: flex; margin-bottom: 10px; }
+.ap-title { font-family: var(--serif); font-size: clamp(1.8rem,3vw,2.6rem); font-weight: 900; letter-spacing: -.03em; line-height: 1.1; }
+.ap-subtitle { font-size: .88rem; color: var(--t40); margin-top: 6px; }
+
+/* ─── FORM LAYOUT ─── */
+.ap-grid {
+  display: grid;
+  grid-template-columns: 1fr 380px;
+  gap: 24px;
+  align-items: start;
+  animation: apIn .7s var(--expo) .08s both;
+}
+
+/* Panel */
+.form-panel {
+  background: rgba(255,255,255,.04);
+  border: 1px solid var(--bd);
+  border-radius: var(--r-xl);
+  overflow: hidden;
+}
+.form-panel-head {
+  padding: 20px 28px;
+  border-bottom: 1px solid var(--bd);
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+.form-panel-head h3 {
+  font-family: var(--serif);
+  font-size: 1.05rem;
+  font-weight: 700;
+}
+.form-panel-head-ico {
+  width: 32px; height: 32px;
+  border-radius: var(--r-sm);
+  background: var(--acid-dim);
+  display: flex; align-items: center; justify-content: center;
+  font-size: .95rem;
+}
+.form-panel-body { padding: 28px; }
+
+/* Section divider */
+.form-section-label {
+  font-family: var(--mono);
+  font-size: .65rem;
+  text-transform: uppercase;
+  letter-spacing: .16em;
+  color: var(--acid);
+  margin: 24px 0 14px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+.form-section-label::after { content: ''; flex: 1; height: 1px; background: var(--bd); }
+.form-section-label:first-child { margin-top: 0; }
+
+/* Two-col field row */
+.field-row-2 {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px;
+}
+.field-row-3 {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  gap: 16px;
+}
+
+/* Individual field */
+.field-wrap {
+  display: flex;
+  flex-direction: column;
+  gap: 7px;
+  margin-bottom: 18px;
+}
+.field-wrap:last-child { margin-bottom: 0; }
+.field-label {
+  font-family: var(--mono);
+  font-size: .68rem;
+  text-transform: uppercase;
+  letter-spacing: .12em;
+  color: var(--t70);
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+.field-label .req { color: var(--rust); }
+.field-hint { font-size: .75rem; color: var(--t40); line-height: 1.5; margin-top: 5px; }
+
+/* Style ALL Django form.as_p fields */
+.ap-form p { display: flex; flex-direction: column; gap: 7px; margin-bottom: 18px; }
+.ap-form p label { font-family: var(--mono); font-size: .68rem; text-transform: uppercase; letter-spacing: .12em; color: var(--t70); }
+
+.ap-form input[type="text"],
+.ap-form input[type="number"],
+.ap-form input[type="email"],
+.ap-form input[type="url"],
+.ap-form select,
+.ap-form textarea {
+  width: 100%;
+  padding: 12px 16px;
+  background: rgba(255,255,255,.06);
+  border: 1px solid var(--bd);
+  border-radius: var(--r-lg);
+  color: var(--text);
+  font-family: var(--sans);
+  font-size: .92rem;
+  outline: none;
+  transition: border-color .3s, box-shadow .3s, background .3s;
+  -webkit-appearance: none; appearance: none;
+}
+.ap-form input::placeholder, .ap-form textarea::placeholder { color: var(--t40); }
+.ap-form input:focus, .ap-form select:focus, .ap-form textarea:focus {
+  border-color: var(--leaf);
+  background: rgba(61,156,71,.05);
+  box-shadow: 0 0 0 4px rgba(61,156,71,.11);
+}
+.ap-form textarea { resize: vertical; min-height: 110px; line-height: 1.6; }
+.ap-form select {
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8'%3E%3Cpath d='M1 1l5 5 5-5' stroke='rgba(237,234,224,.35)' stroke-width='1.5' fill='none' stroke-linecap='round'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 14px center;
+  padding-right: 38px;
+}
+.ap-form input[type="file"] {
+  width: 100%;
+  padding: 10px 14px;
+  background: rgba(255,255,255,.04);
+  border: 1px dashed rgba(255,255,255,.15);
+  border-radius: var(--r-lg);
+  color: var(--t70);
+  font-size: .85rem;
+  cursor: none;
+  transition: border-color .3s, background .3s;
+}
+.ap-form input[type="file"]:hover { border-color: var(--leaf); background: rgba(61,156,71,.05); }
+.ap-form input[type="checkbox"] { width: auto; accent-color: var(--leaf); cursor: none; }
+
+/* Error styles */
+.ap-form ul.errorlist { list-style: none; margin-top: 6px; }
+.ap-form ul.errorlist li { font-size: .75rem; color: #f4a090; padding: 5px 10px; background: rgba(200,92,56,.12); border: 1px solid rgba(200,92,56,.25); border-radius: var(--r-sm); margin-bottom: 4px; display: flex; align-items: center; gap: 6px; }
+.ap-form ul.errorlist li::before { content: '✗'; }
+.ap-form .nonfield-errors { padding: 12px 16px; background: rgba(200,92,56,.12); border: 1px solid rgba(200,92,56,.3); border-radius: var(--r-md); margin-bottom: 20px; font-size: .85rem; color: #f4a090; }
+
+/* ─── IMAGE DROP ZONE ─── */
+.image-dropzone {
+  border: 2px dashed rgba(255,255,255,.12);
+  border-radius: var(--r-xl);
+  padding: 40px 24px;
+  text-align: center;
+  cursor: none;
+  transition: border-color .3s, background .3s;
+  position: relative;
+  overflow: hidden;
+}
+.image-dropzone:hover, .image-dropzone.drag-over {
+  border-color: var(--leaf);
+  background: rgba(61,156,71,.05);
+}
+.image-dropzone input[type="file"] {
+  position: absolute; inset: 0;
+  opacity: 0; width: 100%; height: 100%;
+  cursor: none;
+}
+.dz-ico { font-size: 2.4rem; margin-bottom: 14px; opacity: .5; }
+.dz-text { font-size: .9rem; font-weight: 600; color: var(--t70); margin-bottom: 6px; }
+.dz-sub { font-size: .78rem; color: var(--t40); line-height: 1.5; }
+.dz-or { display: flex; align-items: center; gap: 10px; margin: 16px 0; }
+.dz-or::before, .dz-or::after { content: ''; flex: 1; height: 1px; background: var(--bd); }
+.dz-or span { font-size: .72rem; font-family: var(--mono); color: var(--t40); }
+.dz-preview { margin-top: 16px; display: none; }
+.dz-preview img { width: 100%; height: 140px; object-fit: cover; border-radius: var(--r-lg); }
+
+/* ─── ADD CATEGORY MINI FORM ─── */
+.cat-add-row {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+}
+.cat-add-row input {
+  flex: 1;
+  padding: 11px 16px;
+  background: rgba(255,255,255,.06);
+  border: 1px solid var(--bd);
+  border-radius: var(--r-lg);
+  color: var(--text);
+  font-family: var(--sans);
+  font-size: .88rem;
+  outline: none;
+  transition: border-color .3s, box-shadow .3s;
+}
+.cat-add-row input::placeholder { color: var(--t40); }
+.cat-add-row input:focus { border-color: var(--leaf); box-shadow: 0 0 0 4px rgba(61,156,71,.11); }
+.cat-add-row button {
+  padding: 11px 18px;
+  background: rgba(197,241,53,.12);
+  border: 1px solid rgba(197,241,53,.25);
+  border-radius: var(--r-lg);
+  color: var(--acid);
+  font-family: var(--sans);
+  font-size: .85rem;
+  font-weight: 600;
+  cursor: none;
+  white-space: nowrap;
+  transition: background .2s;
+}
+.cat-add-row button:hover { background: rgba(197,241,53,.2); }
+
+/* ─── SUBMIT AREA ─── */
+.ap-submit-row {
+  display: flex;
+  gap: 12px;
+  align-items: center;
+  padding: 20px 28px;
+  border-top: 1px solid var(--bd);
+  flex-wrap: wrap;
+}
+.ap-submit-row .submit-hint {
+  font-size: .78rem;
+  color: var(--t40);
+  margin-left: auto;
+  font-family: var(--mono);
+}
+
+/* ─── PREVIEW CARD ─── */
+.preview-card {
+  background: rgba(255,255,255,.04);
+  border: 1px solid var(--bd);
+  border-radius: var(--r-xl);
+  overflow: hidden;
+  position: sticky;
+  top: calc(var(--nav-h) + 24px);
+}
+.preview-card-head { padding: 16px 20px; border-bottom: 1px solid var(--bd); }
+.preview-card-head h4 { font-family: var(--mono); font-size: .68rem; text-transform: uppercase; letter-spacing: .14em; color: var(--t40); }
+.preview-img {
+  height: 180px;
+  background: linear-gradient(135deg, var(--forest), var(--ink-s));
+  display: flex; align-items: center; justify-content: center;
+  font-size: 2.5rem;
+  opacity: .4;
+  position: relative;
+  overflow: hidden;
+  transition: opacity .3s;
+}
+.preview-img img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; opacity: 0; transition: opacity .4s; }
+.preview-body { padding: 18px 20px; }
+.preview-cat { font-family: var(--mono); font-size: .62rem; text-transform: uppercase; letter-spacing: .12em; color: var(--acid); margin-bottom: 6px; }
+.preview-name { font-family: var(--serif); font-size: 1.2rem; font-weight: 700; color: var(--text); margin-bottom: 6px; min-height: 1.4em; }
+.preview-desc { font-size: .8rem; color: var(--t40); line-height: 1.6; margin-bottom: 14px; min-height: 2.5em; }
+.preview-price-row { display: flex; align-items: baseline; gap: 6px; margin-bottom: 16px; }
+.preview-price { font-family: var(--mono); font-size: 1.3rem; font-weight: 700; color: var(--acid); }
+.preview-unit { font-size: .75rem; color: var(--t40); font-family: var(--mono); }
+.preview-meta { display: flex; gap: 10px; flex-wrap: wrap; margin-bottom: 16px; }
+.preview-tag { padding: 4px 10px; background: rgba(255,255,255,.06); border: 1px solid var(--bd); border-radius: 100px; font-size: .68rem; font-family: var(--mono); color: var(--t40); }
+.preview-add-btn { width: 100%; padding: 12px; background: rgba(61,156,71,.13); border: 1px solid rgba(61,156,71,.28); border-radius: var(--r-lg); color: var(--leaf); font-family: var(--sans); font-weight: 600; font-size: .88rem; text-align: center; }
+
+/* ─── RESPONSIVE ─── */
+@media(max-width:1100px) { .ap-grid { grid-template-columns: 1fr; } .preview-card { position: static; } }
+@media(max-width:900px) { .dash-sidebar { transform: translateX(-100%); } .ap-main { margin-left: 0; padding: 32px 24px; } .field-row-2, .field-row-3 { grid-template-columns: 1fr; } }
+{% endblock %}
+
+{% block content %}
+<div class="ap-page">
+
+  <!-- Sidebar -->
+  <aside class="dash-sidebar" id="dashSidebar">
+    <div class="sidebar-profile">
+      <div class="sidebar-ava">👨‍🌾</div>
+      <div class="sidebar-name">{{ request.user.get_full_name|default:request.user.username }}</div>
+      <div class="sidebar-email">{{ request.user.email }}</div>
+      <span class="sidebar-badge">✓ Verified Seller</span>
+    </div>
+    <nav class="sidebar-nav">
+      <div class="sidebar-group">
+        <div class="sidebar-group-label">Overview</div>
+        <a href="/dashboard/seller/" class="sidebar-link">
+          <span class="sidebar-link-ico">📊</span> Dashboard
+        </a>
+      </div>
+      <div class="sidebar-group">
+        <div class="sidebar-group-label">Store</div>
+        <a href="/products/add/" class="sidebar-link active">
+          <span class="sidebar-link-ico">➕</span> Add Product
+        </a>
+        <a href="/products/my-products/" class="sidebar-link">
+          <span class="sidebar-link-ico">📦</span> My Products
+        </a>
+      </div>
+      <div class="sidebar-group">
+        <div class="sidebar-group-label">Orders</div>
+        <a href="#" class="sidebar-link"><span class="sidebar-link-ico">🛒</span> All Orders</a>
+        <a href="#" class="sidebar-link"><span class="sidebar-link-ico">🚚</span> Shipped</a>
+        <a href="#" class="sidebar-link"><span class="sidebar-link-ico">✅</span> Delivered</a>
+      </div>
+      <div class="sidebar-group">
+        <div class="sidebar-group-label">Finance</div>
+        <a href="#" class="sidebar-link"><span class="sidebar-link-ico">💰</span> Earnings</a>
+        <a href="#" class="sidebar-link"><span class="sidebar-link-ico">⟡</span> Apply for Funding</a>
+      </div>
+    </nav>
+    <div class="sidebar-footer">
+      <a href="{% url 'logout' %}" class="sidebar-link" style="color:var(--rust) !important">
+        <span class="sidebar-link-ico">←</span> Log Out
+      </a>
+    </div>
+  </aside>
+
+  <!-- Main -->
+  <main class="ap-main">
+
+    <!-- Header -->
+    <div class="ap-header">
+      <div class="ap-header-left">
+        <div class="eyebrow">Seller Dashboard</div>
+        <h1 class="ap-title">Add New Product</h1>
+        <p class="ap-subtitle">Fill in the details below to list your product on AgroMart.</p>
+      </div>
+      <a href="/products/my-products/" class="btn btn-ghost" style="padding:10px 20px;font-size:.85rem">← My Products</a>
+    </div>
+
+    <form method="POST" enctype="multipart/form-data" class="ap-form" id="apForm" novalidate>
+      {% csrf_token %}
+
+      <div class="ap-grid">
+
+        <!-- LEFT: main form panels -->
+        <div>
+
+          <!-- Non-field errors -->
+          {% if form.non_field_errors %}
+          <div class="nonfield-errors" style="margin-bottom:20px">
+            {% for e in form.non_field_errors %}{{ e }}{% endfor %}
+          </div>
+          {% endif %}
+
+          <!-- Basic Info -->
+          <div class="form-panel" style="margin-bottom:20px">
+            <div class="form-panel-head">
+              <div class="form-panel-head-ico">📝</div>
+              <h3>Product Information</h3>
+            </div>
+            <div class="form-panel-body">
+
+              <div class="form-section-label">Basic Details</div>
+
+              <div class="field-wrap">
+                <label class="field-label">{{ form.name.label }} <span class="req">*</span></label>
+                {{ form.name }}
+                {% if form.name.errors %}<ul class="errorlist">{% for e in form.name.errors %}<li>{{ e }}</li>{% endfor %}</ul>{% endif %}
+              </div>
+
+              <div class="field-wrap">
+                <label class="field-label">{{ form.description.label }}</label>
+                {{ form.description }}
+                <span class="field-hint">Describe your product — freshness, origin, how it's grown. Detailed listings sell faster.</span>
+                {% if form.description.errors %}<ul class="errorlist">{% for e in form.description.errors %}<li>{{ e }}</li>{% endfor %}</ul>{% endif %}
+              </div>
+
+              <div class="form-section-label">Pricing &amp; Stock</div>
+
+              <div class="field-row-3">
+                <div class="field-wrap" style="margin-bottom:0">
+                  <label class="field-label">{{ form.price.label }} (₦) <span class="req">*</span></label>
+                  {{ form.price }}
+                  {% if form.price.errors %}<ul class="errorlist">{% for e in form.price.errors %}<li>{{ e }}</li>{% endfor %}</ul>{% endif %}
+                </div>
+                <div class="field-wrap" style="margin-bottom:0">
+                  <label class="field-label">{{ form.quantity.label }} <span class="req">*</span></label>
+                  {{ form.quantity }}
+                  {% if form.quantity.errors %}<ul class="errorlist">{% for e in form.quantity.errors %}<li>{{ e }}</li>{% endfor %}</ul>{% endif %}
+                </div>
+                <div class="field-wrap" style="margin-bottom:0">
+                  <label class="field-label">Unit <span class="req">*</span></label>
+                  {{ form.unit }}
+                  {% if form.unit.errors %}<ul class="errorlist">{% for e in form.unit.errors %}<li>{{ e }}</li>{% endfor %}</ul>{% endif %}
+                </div>
+              </div>
+
+              <div class="form-section-label" style="margin-top:24px">Category</div>
+
+              <div class="field-row-2">
+                <div class="field-wrap" style="margin-bottom:0">
+                  <label class="field-label">{{ form.category.label }}</label>
+                  {{ form.category }}
+                  {% if form.category.errors %}<ul class="errorlist">{% for e in form.category.errors %}<li>{{ e }}</li>{% endfor %}</ul>{% endif %}
+                </div>
+                <div class="field-wrap" style="margin-bottom:0">
+                  <label class="field-label">Or add new category</label>
+                  <div class="cat-add-row">
+                    <input type="text" name="new_category" id="newCatInput" placeholder="e.g. Organic Produce" />
+                    <button type="button" id="addCatBtn">+ Add</button>
+                  </div>
+                  <span class="field-hint">New category will be created and selected automatically.</span>
+                </div>
+              </div>
+
+            </div>
+          </div>
+
+          <!-- Image Upload -->
+          <div class="form-panel" style="margin-bottom:20px">
+            <div class="form-panel-head">
+              <div class="form-panel-head-ico">🖼️</div>
+              <h3>Product Image</h3>
+            </div>
+            <div class="form-panel-body">
+              <div class="image-dropzone" id="dropzone">
+                <input type="file" name="{{ form.image.html_name }}" id="imageInput" accept="image/*" />
+                <div class="dz-ico">📷</div>
+                <div class="dz-text">Drag &amp; drop your product photo here</div>
+                <div class="dz-sub">Clear photos with good lighting increase buyer confidence and conversion rates.</div>
+                <div class="dz-or"><span>or</span></div>
+                <span class="btn btn-ghost" style="padding:9px 20px;font-size:.82rem;pointer-events:none">Browse File</span>
+                <div class="dz-preview" id="dzPreview">
+                  <img src="" alt="Preview" id="dzPreviewImg" />
+                </div>
+              </div>
+              {% if form.image.errors %}<ul class="errorlist" style="margin-top:10px">{% for e in form.image.errors %}<li>{{ e }}</li>{% endfor %}</ul>{% endif %}
+              <span class="field-hint" style="display:block;margin-top:10px">Accepted: JPG, PNG, WEBP. Max size: 5MB. Square or 4:3 ratio recommended.</span>
+            </div>
+          </div>
+
+          <!-- Additional fields if your form has them -->
+          {% if form.location or form.is_available %}
+          <div class="form-panel" style="margin-bottom:20px">
+            <div class="form-panel-head">
+              <div class="form-panel-head-ico">📍</div>
+              <h3>Additional Details</h3>
+            </div>
+            <div class="form-panel-body">
+              {% if form.location %}
+              <div class="field-wrap">
+                <label class="field-label">{{ form.location.label }}</label>
+                {{ form.location }}
+              </div>
+              {% endif %}
+              {% if form.is_available %}
+              <div style="display:flex;align-items:center;gap:10px;padding:12px;background:rgba(255,255,255,.03);border:1px solid var(--bd);border-radius:var(--r-md)">
+                {{ form.is_available }}
+                <label for="{{ form.is_available.id_for_label }}" style="font-size:.88rem;color:var(--t70);cursor:none">
+                  Mark this product as <strong style="color:var(--text)">available</strong> and visible to buyers
+                </label>
+              </div>
+              {% endif %}
+            </div>
+          </div>
+          {% endif %}
+
+        </div>
+
+        <!-- RIGHT: live preview -->
+        <div>
+          <div class="preview-card">
+            <div class="preview-card-head">
+              <h4>Live Preview</h4>
+            </div>
+            <div class="preview-img" id="previewImgWrap">
+              🌿
+              <img src="" alt="" id="previewImgEl" />
+            </div>
+            <div class="preview-body">
+              <div class="preview-cat" id="previewCat">Category</div>
+              <div class="preview-name" id="previewName">Product name will appear here</div>
+              <div class="preview-desc" id="previewDesc">Your product description will be shown to buyers browsing the marketplace.</div>
+              <div class="preview-price-row">
+                <span class="preview-price" id="previewPrice">₦0</span>
+                <span class="preview-unit" id="previewUnit">/ unit</span>
+              </div>
+              <div class="preview-meta">
+                <span class="preview-tag" id="previewQty">Qty: 0</span>
+                <span class="preview-tag">📍 Your Farm</span>
+                <span class="preview-tag">✓ Verified Seller</span>
+              </div>
+              <div class="preview-add-btn">+ Add to Cart</div>
+            </div>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- Submit bar -->
+      <div class="form-panel ap-submit-row">
+        <a href="/products/my-products/" class="btn btn-ghost">Cancel</a>
+        <button type="submit" class="btn btn-green btn-lg">
+          ✓ Publish Product
+        </button>
+        <span class="submit-hint">Product will be reviewed before going live</span>
+      </div>
+
+    </form>
+  </main>
+</div>
+{% endblock %}
+
+{% block extra_scripts %}
+<script>
+(()=>{
+  /* ── Live preview ── */
+  function el(id){ return document.getElementById(id); }
+  function bind(formField, previewId, transform){
+    const f = document.querySelector(`[name="${formField}"]`);
+    if(!f) return;
+    f.addEventListener('input', () => {
+      const v = transform ? transform(f.value) : f.value;
+      el(previewId).textContent = v || el(previewId).dataset.placeholder || '';
+    });
+  }
+
+  bind('name','previewName');
+  bind('description','previewDesc');
+  bind('price','previewPrice', v => v ? '₦' + Number(v).toLocaleString() : '₦0');
+  bind('quantity','previewQty', v => v ? 'Qty: ' + v : 'Qty: 0');
+
+  const unitField = document.querySelector('[name="unit"]');
+  if(unitField) unitField.addEventListener('change', () => {
+    el('previewUnit').textContent = '/ ' + (unitField.value || 'unit');
+  });
+
+  const catField = document.querySelector('[name="category"]');
+  if(catField) catField.addEventListener('change', () => {
+    const opt = catField.options[catField.selectedIndex];
+    el('previewCat').textContent = opt ? opt.text : 'Category';
+  });
+
+  /* ── Image preview in dropzone + preview card ── */
+  const imgInput = el('imageInput');
+  if(imgInput){
+    imgInput.addEventListener('change', () => {
+      const file = imgInput.files[0];
+      if(!file) return;
+      const url = URL.createObjectURL(file);
+      // dropzone preview
+      const dp = el('dzPreview'), dpi = el('dzPreviewImg');
+      if(dp && dpi){ dpi.src = url; dp.style.display = 'block'; }
+      // preview card
+      const pi = el('previewImgEl'), pw = el('previewImgWrap');
+      if(pi && pw){ pi.src = url; pi.style.opacity = '1'; pw.style.opacity = '1'; }
+    });
+  }
+
+  /* ── Drag over dropzone ── */
+  const dz = el('dropzone');
+  if(dz){
+    ['dragover','dragenter'].forEach(ev => dz.addEventListener(ev, e => { e.preventDefault(); dz.classList.add('drag-over'); }));
+    ['dragleave','drop'].forEach(ev => dz.addEventListener(ev, () => dz.classList.remove('drag-over')));
+  }
+
+  /* ── Add new category ── */
+  const addCatBtn = el('addCatBtn'), newCatInput = el('newCatInput');
+  const catSelect = document.querySelector('[name="category"]');
+  if(addCatBtn && newCatInput && catSelect){
+    addCatBtn.addEventListener('click', () => {
+      const val = newCatInput.value.trim();
+      if(!val) return;
+      const opt = new Option(val, val, true, true);
+      catSelect.appendChild(opt);
+      catSelect.value = val;
+      el('previewCat').textContent = val;
+      newCatInput.value = '';
+      if(window.toast) window.toast('Category added ✓', val + ' is now selected');
+    });
+  }
+
+  /* Mobile sidebar */
+  const ham = document.getElementById('hamburger'), sidebar = document.getElementById('dashSidebar');
+  if(ham && sidebar) ham.addEventListener('click', () => sidebar.classList.toggle('mobile-open'));
+})();
+</script>
+{% endblock %}

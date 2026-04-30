@@ -1,0 +1,1189 @@
+{% extends "base.html" %}
+{% load static %}
+{% block title %}Admin Dashboard — AgroMart{% endblock %}
+
+{% block extra_styles %}
+
+/* ═══════════════════════════════════════════════════
+   ADMIN DASHBOARD — LAYOUT
+═══════════════════════════════════════════════════ */
+.adm-page {
+  display: flex;
+  min-height: 100vh;
+  padding-top: var(--nav-h);
+}
+
+/* ─── SIDEBAR ─── */
+.adm-sidebar {
+  width: 268px;
+  flex-shrink: 0;
+  background: rgba(8,16,10,.98);
+  border-right: 1px solid var(--bd);
+  display: flex;
+  flex-direction: column;
+  position: fixed;
+  top: var(--nav-h); left: 0; bottom: 0;
+  overflow-y: auto;
+  z-index: 200;
+  transition: transform .4s var(--expo);
+}
+.adm-sidebar::-webkit-scrollbar { width: 2px; }
+
+/* Admin identity block */
+.adm-identity {
+  padding: 24px 22px 20px;
+  border-bottom: 1px solid var(--bd);
+  position: relative;
+  overflow: hidden;
+}
+.adm-identity::before {
+  content: '🛡️';
+  position: absolute;
+  right: -8px; top: -8px;
+  font-size: 5rem;
+  opacity: .04;
+  pointer-events: none;
+  user-select: none;
+}
+.adm-ava-wrap { display: flex; align-items: center; gap: 12px; margin-bottom: 14px; }
+.adm-ava {
+  width: 44px; height: 44px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, #1a2e3a, #2a5a6a);
+  border: 2px solid rgba(197,241,53,.3);
+  display: flex; align-items: center; justify-content: center;
+  font-size: 1.1rem;
+  flex-shrink: 0;
+}
+.adm-name { font-weight: 700; font-size: .92rem; color: var(--text); line-height: 1.3; }
+.adm-email { font-size: .68rem; font-family: var(--mono); color: var(--t40); margin-top: 1px; }
+.adm-shield-badge {
+  display: inline-flex; align-items: center; gap: 6px;
+  padding: 5px 12px;
+  background: linear-gradient(90deg, rgba(60,130,200,.2), rgba(100,60,200,.15));
+  border: 1px solid rgba(100,150,240,.25);
+  border-radius: 100px;
+  font-size: .63rem;
+  font-family: var(--mono);
+  color: #8ab4f8;
+  text-transform: uppercase;
+  letter-spacing: .1em;
+}
+.adm-shield-badge::before { content: '●'; font-size: .5rem; color: #8ab4f8; animation: blink 2s ease-in-out infinite; }
+@keyframes blink { 0%,100%{opacity:1} 50%{opacity:.3} }
+
+/* Navigation */
+.adm-nav { flex: 1; padding: 14px 10px; }
+.adm-nav-group { margin-bottom: 26px; }
+.adm-nav-label {
+  font-family: var(--mono);
+  font-size: .58rem;
+  text-transform: uppercase;
+  letter-spacing: .18em;
+  color: var(--t40);
+  padding: 0 12px;
+  margin-bottom: 5px;
+}
+.adm-link {
+  display: flex; align-items: center; gap: 10px;
+  padding: 9px 12px;
+  border-radius: var(--r-md);
+  font-size: .86rem;
+  font-weight: 500;
+  color: var(--t70) !important;
+  text-decoration: none !important;
+  transition: background .2s, color .2s;
+  position: relative;
+  cursor: none;
+}
+.adm-link:hover { background: rgba(255,255,255,.06); color: var(--text) !important; }
+.adm-link.active {
+  background: rgba(138,180,248,.08);
+  color: #8ab4f8 !important;
+}
+.adm-link.active::before {
+  content: '';
+  position: absolute; left: 0; top: 22%; bottom: 22%;
+  width: 3px;
+  background: #8ab4f8;
+  border-radius: 0 2px 2px 0;
+}
+.adm-link-ico { font-size: .95rem; width: 20px; text-align: center; flex-shrink: 0; }
+.adm-link-badge {
+  margin-left: auto;
+  padding: 2px 8px;
+  border-radius: 100px;
+  font-family: var(--mono);
+  font-size: .58rem;
+  font-weight: 700;
+}
+.adm-link-badge.alert { background: rgba(200,92,56,.25); color: var(--rust); }
+.adm-link-badge.new   { background: rgba(197,241,53,.18); color: var(--acid); }
+.adm-link-badge.info  { background: rgba(138,180,248,.18); color: #8ab4f8; }
+
+.adm-sidebar-footer { padding: 14px 10px; border-top: 1px solid var(--bd); }
+.adm-version {
+  font-family: var(--mono);
+  font-size: .6rem;
+  color: var(--t40);
+  padding: 0 12px;
+  margin-bottom: 6px;
+}
+
+/* ─── MAIN ─── */
+.adm-main {
+  flex: 1;
+  margin-left: 268px;
+  padding: 44px 52px;
+  min-height: calc(100vh - var(--nav-h));
+}
+
+/* Page header */
+.adm-header {
+  display: flex; align-items: flex-start;
+  justify-content: space-between;
+  margin-bottom: 36px;
+  flex-wrap: wrap; gap: 20px;
+  animation: admIn .7s var(--expo) both;
+}
+@keyframes admIn { from{opacity:0;transform:translateY(18px)} to{opacity:1;transform:translateY(0)} }
+.adm-header-left .eyebrow { display: flex; margin-bottom: 10px; }
+.adm-title {
+  font-family: var(--serif);
+  font-size: clamp(1.9rem, 3vw, 2.7rem);
+  font-weight: 900;
+  letter-spacing: -.03em;
+  line-height: 1.1;
+}
+.adm-subtitle { font-size: .875rem; color: var(--t40); margin-top: 6px; }
+.adm-header-right { display: flex; gap: 10px; align-items: center; flex-wrap: wrap; }
+
+/* Live status pill */
+.live-pill {
+  display: flex; align-items: center; gap: 8px;
+  padding: 8px 16px;
+  background: rgba(61,156,71,.1);
+  border: 1px solid rgba(61,156,71,.25);
+  border-radius: 100px;
+  font-family: var(--mono);
+  font-size: .7rem;
+  color: var(--leaf);
+}
+.live-dot { width: 6px; height: 6px; background: var(--leaf); border-radius: 50%; animation: blink 2s ease-in-out infinite; }
+
+/* ─── KPI CARDS ─── */
+.kpi-grid {
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  gap: 14px;
+  margin-bottom: 28px;
+}
+.kpi-card {
+  background: rgba(255,255,255,.04);
+  border: 1px solid var(--bd);
+  border-radius: var(--r-xl);
+  padding: 22px 20px;
+  position: relative; overflow: hidden;
+  transition: border-color .3s, transform .35s var(--expo), box-shadow .35s;
+  animation: admIn .7s var(--expo) both;
+  cursor: none;
+}
+.kpi-card:hover { border-color: var(--bd-h); transform: translateY(-4px); box-shadow: 0 16px 40px rgba(0,0,0,.35); }
+.kpi-card::after {
+  content: '';
+  position: absolute; top: 0; right: 0;
+  width: 70px; height: 70px;
+  background: radial-gradient(circle at top right, var(--kg, rgba(197,241,53,.07)), transparent 70%);
+  pointer-events: none;
+}
+.kpi-card.c-green  { --kg: rgba(61,156,71,.12); }
+.kpi-card.c-blue   { --kg: rgba(138,180,248,.10); }
+.kpi-card.c-gold   { --kg: rgba(212,168,67,.10); }
+.kpi-card.c-rust   { --kg: rgba(200,92,56,.10); }
+.kpi-card.c-purple { --kg: rgba(160,100,240,.10); }
+
+.kpi-icon { font-size: 1.3rem; margin-bottom: 14px; display: block; }
+.kpi-label { font-family: var(--mono); font-size: .62rem; text-transform: uppercase; letter-spacing: .12em; color: var(--t40); margin-bottom: 7px; }
+.kpi-value { font-family: var(--serif); font-size: 1.9rem; font-weight: 900; color: var(--text); line-height: 1; margin-bottom: 10px; }
+.kpi-delta {
+  display: inline-flex; align-items: center; gap: 4px;
+  font-size: .7rem; font-family: var(--mono);
+  padding: 3px 8px; border-radius: 100px;
+}
+.kpi-delta.up   { background: rgba(61,156,71,.14); color: var(--leaf); }
+.kpi-delta.down { background: rgba(200,92,56,.12); color: var(--rust); }
+.kpi-delta.flat { background: rgba(255,255,255,.06); color: var(--t40); }
+
+/* Stagger */
+.kpi-card:nth-child(1){animation-delay:.05s}
+.kpi-card:nth-child(2){animation-delay:.10s}
+.kpi-card:nth-child(3){animation-delay:.15s}
+.kpi-card:nth-child(4){animation-delay:.20s}
+.kpi-card:nth-child(5){animation-delay:.25s}
+
+/* ─── PANEL SHELL ─── */
+.panel {
+  background: rgba(255,255,255,.04);
+  border: 1px solid var(--bd);
+  border-radius: var(--r-xl);
+  overflow: hidden;
+  animation: admIn .7s var(--expo) .1s both;
+}
+.panel-head {
+  display: flex; align-items: center;
+  justify-content: space-between;
+  padding: 18px 24px;
+  border-bottom: 1px solid var(--bd);
+}
+.panel-head h3 { font-family: var(--serif); font-size: 1rem; font-weight: 700; display: flex; align-items: center; gap: 8px; }
+.panel-head-right { display: flex; align-items: center; gap: 8px; }
+.panel-link {
+  font-family: var(--mono); font-size: .67rem;
+  text-transform: uppercase; letter-spacing: .1em;
+  color: #8ab4f8 !important;
+  text-decoration: none !important;
+  transition: opacity .2s;
+}
+.panel-link:hover { opacity: .7; }
+.panel-body { padding: 20px 24px; }
+
+/* ─── GRID LAYOUTS ─── */
+.adm-grid-3-2 {
+  display: grid;
+  grid-template-columns: 1.6fr 1fr;
+  gap: 20px;
+  margin-bottom: 20px;
+}
+.adm-grid-3 {
+  display: grid;
+  grid-template-columns: repeat(3,1fr);
+  gap: 20px;
+  margin-bottom: 20px;
+}
+.adm-grid-2 {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 20px;
+  margin-bottom: 20px;
+}
+
+/* ─── DATA TABLE ─── */
+.adm-table { width: 100%; border-collapse: collapse; }
+.adm-table th {
+  font-family: var(--mono); font-size: .6rem;
+  text-transform: uppercase; letter-spacing: .13em;
+  color: var(--t40); padding: 0 16px 12px;
+  text-align: left; border-bottom: 1px solid var(--bd);
+  white-space: nowrap;
+}
+.adm-table th:last-child { text-align: right; }
+.adm-table td {
+  padding: 13px 16px; font-size: .855rem;
+  border-bottom: 1px solid rgba(255,255,255,.04);
+  color: var(--t70); vertical-align: middle;
+}
+.adm-table tr:last-child td { border-bottom: none; }
+.adm-table tr:hover td { background: rgba(255,255,255,.03); }
+.adm-table td:last-child { text-align: right; }
+.adm-table td.mono { font-family: var(--mono); font-size: .8rem; }
+
+/* User avatar row */
+.user-cell { display: flex; align-items: center; gap: 10px; }
+.user-ava-sm {
+  width: 32px; height: 32px; border-radius: 50%;
+  background: linear-gradient(135deg, var(--grove), var(--leaf));
+  display: flex; align-items: center; justify-content: center;
+  font-size: .8rem; flex-shrink: 0;
+}
+.user-name { font-weight: 600; font-size: .86rem; color: var(--text); }
+.user-email { font-size: .7rem; color: var(--t40); font-family: var(--mono); margin-top: 1px; }
+
+/* Role badge */
+.role-badge {
+  display: inline-flex; align-items: center; gap: 4px;
+  padding: 3px 10px; border-radius: 100px;
+  font-family: var(--mono); font-size: .62rem;
+  font-weight: 700; text-transform: uppercase; letter-spacing: .06em;
+  white-space: nowrap;
+}
+.role-badge.buyer    { background: rgba(197,241,53,.1); color: var(--acid); border: 1px solid rgba(197,241,53,.2); }
+.role-badge.seller   { background: rgba(61,156,71,.12); color: var(--leaf); border: 1px solid rgba(61,156,71,.2); }
+.role-badge.admin    { background: rgba(138,180,248,.1); color: #8ab4f8; border: 1px solid rgba(138,180,248,.2); }
+.role-badge.investor { background: rgba(212,168,67,.1); color: var(--gold); border: 1px solid rgba(212,168,67,.2); }
+
+/* Status dots */
+.status-badge {
+  display: inline-flex; align-items: center; gap: 5px;
+  padding: 4px 10px; border-radius: 100px;
+  font-family: var(--mono); font-size: .6rem;
+  font-weight: 700; text-transform: uppercase; letter-spacing: .06em;
+}
+.status-badge::before { content: ''; width: 5px; height: 5px; border-radius: 50%; background: currentColor; }
+.status-pending   { background: rgba(212,168,67,.12); color: var(--gold); }
+.status-paid      { background: rgba(61,156,71,.12);  color: var(--leaf); }
+.status-shipped   { background: rgba(138,180,248,.12); color: #8ab4f8; }
+.status-delivered { background: rgba(197,241,53,.12); color: var(--acid); }
+.status-cancelled { background: rgba(200,92,56,.12);  color: var(--rust); }
+.status-active    { background: rgba(61,156,71,.12);  color: var(--leaf); }
+.status-suspended { background: rgba(200,92,56,.12);  color: var(--rust); }
+.status-pending-approval { background: rgba(212,168,67,.12); color: var(--gold); }
+
+/* Table action buttons */
+.tbl-actions { display: flex; gap: 6px; justify-content: flex-end; }
+.tbl-btn {
+  display: inline-flex; align-items: center; gap: 4px;
+  padding: 5px 12px;
+  border-radius: var(--r-sm);
+  font-family: var(--mono); font-size: .65rem;
+  font-weight: 700; text-transform: uppercase; letter-spacing: .06em;
+  border: 1px solid var(--bd);
+  background: none; color: var(--t70) !important;
+  cursor: none; text-decoration: none !important;
+  transition: all .2s;
+}
+.tbl-btn:hover { background: rgba(255,255,255,.08); color: var(--text) !important; }
+.tbl-btn.approve { border-color: rgba(61,156,71,.3); color: var(--leaf) !important; }
+.tbl-btn.approve:hover { background: rgba(61,156,71,.14); }
+.tbl-btn.suspend { border-color: rgba(200,92,56,.28); color: var(--rust) !important; }
+.tbl-btn.suspend:hover { background: rgba(200,92,56,.12); }
+.tbl-btn.view { border-color: rgba(138,180,248,.25); color: #8ab4f8 !important; }
+.tbl-btn.view:hover { background: rgba(138,180,248,.1); }
+
+/* ─── ACTIVITY FEED ─── */
+.activity-feed { display: flex; flex-direction: column; }
+.activity-item {
+  display: flex; align-items: flex-start; gap: 14px;
+  padding: 14px 0;
+  border-bottom: 1px solid rgba(255,255,255,.04);
+  position: relative;
+}
+.activity-item:last-child { border-bottom: none; }
+.activity-ico {
+  width: 34px; height: 34px; border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+  font-size: .9rem; flex-shrink: 0;
+}
+.activity-ico.green  { background: rgba(61,156,71,.15); }
+.activity-ico.blue   { background: rgba(138,180,248,.12); }
+.activity-ico.gold   { background: rgba(212,168,67,.12); }
+.activity-ico.rust   { background: rgba(200,92,56,.12); }
+.activity-ico.purple { background: rgba(160,100,240,.12); }
+.activity-body { flex: 1; min-width: 0; }
+.activity-body p { font-size: .855rem; color: var(--t70); line-height: 1.5; }
+.activity-body p strong { color: var(--text); font-weight: 600; }
+.activity-time { font-family: var(--mono); font-size: .65rem; color: var(--t40); margin-top: 3px; }
+
+/* ─── QUICK ACTIONS GRID ─── */
+.qa-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; padding: 20px 24px; }
+.qa-card {
+  display: flex; align-items: center; gap: 12px;
+  padding: 14px 15px;
+  background: rgba(255,255,255,.03);
+  border: 1px solid var(--bd);
+  border-radius: var(--r-lg);
+  font-size: .855rem; font-weight: 600;
+  color: var(--t70) !important;
+  text-decoration: none !important;
+  transition: background .25s, border-color .25s, color .25s, transform .3s var(--expo);
+  cursor: none;
+}
+.qa-card:hover { background: rgba(138,180,248,.07); border-color: rgba(138,180,248,.2); color: var(--text) !important; transform: translateY(-2px); }
+.qa-ico {
+  width: 34px; height: 34px; border-radius: var(--r-md);
+  background: rgba(255,255,255,.06);
+  display: flex; align-items: center; justify-content: center;
+  font-size: .95rem; flex-shrink: 0;
+  transition: background .25s;
+}
+.qa-card:hover .qa-ico { background: rgba(138,180,248,.12); }
+.qa-text small { display: block; font-size: .68rem; font-weight: 400; color: var(--t40); margin-top: 1px; }
+.qa-badge-num {
+  margin-left: auto;
+  padding: 2px 8px;
+  background: rgba(200,92,56,.2);
+  color: var(--rust);
+  border-radius: 100px;
+  font-family: var(--mono); font-size: .6rem; font-weight: 700;
+}
+
+/* ─── REVENUE BAR CHART ─── */
+.rev-chart { padding: 4px 0; }
+.rev-row { display: flex; align-items: center; gap: 10px; margin-bottom: 11px; }
+.rev-row:last-child { margin-bottom: 0; }
+.rev-label { font-family: var(--mono); font-size: .65rem; color: var(--t40); width: 30px; text-align: right; flex-shrink: 0; }
+.rev-track { flex: 1; height: 7px; background: rgba(255,255,255,.06); border-radius: 100px; overflow: hidden; }
+.rev-fill { height: 100%; border-radius: 100px; background: linear-gradient(90deg, #2a5a80, #8ab4f8); transition: width 1.3s var(--expo); }
+.rev-fill.green { background: linear-gradient(90deg, var(--grove), var(--acid)); }
+.rev-val { font-family: var(--mono); font-size: .65rem; color: var(--t40); width: 64px; text-align: right; flex-shrink: 0; }
+
+/* ─── PLATFORM HEALTH ─── */
+.health-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+.health-item {
+  padding: 16px;
+  background: rgba(255,255,255,.03);
+  border: 1px solid var(--bd);
+  border-radius: var(--r-lg);
+}
+.health-item-top { display: flex; align-items: center; justify-content: space-between; margin-bottom: 10px; }
+.health-label { font-size: .78rem; font-weight: 600; color: var(--t70); }
+.health-val { font-family: var(--mono); font-size: .78rem; font-weight: 700; }
+.health-val.good { color: var(--leaf); }
+.health-val.warn { color: var(--gold); }
+.health-val.bad  { color: var(--rust); }
+.health-bar-track { height: 4px; background: rgba(255,255,255,.06); border-radius: 100px; overflow: hidden; }
+.health-bar-fill { height: 100%; border-radius: 100px; transition: width 1.4s var(--expo); }
+.health-bar-fill.good  { background: var(--leaf); }
+.health-bar-fill.warn  { background: var(--gold); }
+.health-bar-fill.bad   { background: var(--rust); }
+
+/* ─── PENDING SELLERS ─── */
+.seller-approval-item {
+  display: flex; align-items: center; gap: 14px;
+  padding: 13px 0;
+  border-bottom: 1px solid rgba(255,255,255,.04);
+}
+.seller-approval-item:last-child { border-bottom: none; }
+.seller-approval-ava {
+  width: 38px; height: 38px; border-radius: 50%;
+  background: linear-gradient(135deg, var(--grove), var(--leaf));
+  display: flex; align-items: center; justify-content: center;
+  font-size: 1rem; flex-shrink: 0;
+}
+.seller-approval-info { flex: 1; min-width: 0; }
+.seller-approval-name { font-size: .875rem; font-weight: 600; color: var(--text); }
+.seller-approval-meta { font-size: .7rem; color: var(--t40); font-family: var(--mono); margin-top: 2px; }
+.seller-approval-actions { display: flex; gap: 6px; }
+
+/* ─── EMPTY STATE ─── */
+.tbl-empty { padding: 48px 24px; text-align: center; }
+.tbl-empty-ico { font-size: 2.2rem; margin-bottom: 12px; opacity: .4; }
+.tbl-empty p { font-size: .855rem; color: var(--t40); }
+
+/* ─── RESPONSIVE ─── */
+@media(max-width:1300px) {
+  .kpi-grid { grid-template-columns: repeat(3,1fr); }
+}
+@media(max-width:1100px) {
+  .adm-grid-3-2 { grid-template-columns: 1fr; }
+  .adm-grid-3   { grid-template-columns: 1fr 1fr; }
+  .kpi-grid     { grid-template-columns: repeat(2,1fr); }
+}
+@media(max-width:900px) {
+  .adm-sidebar { transform: translateX(-100%); }
+  .adm-sidebar.mobile-open { transform: translateX(0); }
+  .adm-main { margin-left: 0; padding: 32px 24px; }
+  .adm-grid-2,.adm-grid-3 { grid-template-columns: 1fr; }
+  .kpi-grid { grid-template-columns: 1fr 1fr; }
+  .health-grid { grid-template-columns: 1fr; }
+}
+@media(max-width:480px) {
+  .kpi-grid { grid-template-columns: 1fr; }
+  .qa-grid  { grid-template-columns: 1fr; }
+}
+{% endblock %}
+
+{% block content %}
+<div class="adm-page">
+
+  <!-- ══ ADMIN SIDEBAR ══ -->
+  <aside class="adm-sidebar" id="admSidebar">
+
+    <div class="adm-identity">
+      <div class="adm-ava-wrap">
+        <div class="adm-ava">🛡️</div>
+        <div>
+          <div class="adm-name">{{ request.user.get_full_name|default:request.user.username }}</div>
+          <div class="adm-email">{{ request.user.email }}</div>
+        </div>
+      </div>
+      <span class="adm-shield-badge">Super Admin</span>
+    </div>
+
+    <nav class="adm-nav">
+
+      <div class="adm-nav-group">
+        <div class="adm-nav-label">Overview</div>
+        <a href="#" class="adm-link active">
+          <span class="adm-link-ico">📊</span> Dashboard
+        </a>
+        <a href="#" class="adm-link">
+          <span class="adm-link-ico">📈</span> Analytics
+        </a>
+        <a href="#" class="adm-link">
+          <span class="adm-link-ico">🗺️</span> Platform Map
+        </a>
+      </div>
+
+      <div class="adm-nav-group">
+        <div class="adm-nav-label">Users</div>
+        <a href="#" class="adm-link">
+          <span class="adm-link-ico">👥</span> All Users
+          {% if total_users %}<span class="adm-link-badge info">{{ total_users }}</span>{% endif %}
+        </a>
+        <a href="#" class="adm-link">
+          <span class="adm-link-ico">👨‍🌾</span> Sellers
+          {% if pending_sellers %}<span class="adm-link-badge alert">{{ pending_sellers }} pending</span>{% endif %}
+        </a>
+        <a href="#" class="adm-link">
+          <span class="adm-link-ico">🛒</span> Buyers
+        </a>
+        <a href="#" class="adm-link">
+          <span class="adm-link-ico">⟡</span> Investors
+        </a>
+      </div>
+
+      <div class="adm-nav-group">
+        <div class="adm-nav-label">Catalogue</div>
+        <a href="#" class="adm-link">
+          <span class="adm-link-ico">📦</span> All Products
+          {% if total_products %}<span class="adm-link-badge info">{{ total_products }}</span>{% endif %}
+        </a>
+        <a href="#" class="adm-link">
+          <span class="adm-link-ico">🏷️</span> Categories
+        </a>
+        <a href="#" class="adm-link">
+          <span class="adm-link-ico">🚩</span> Flagged Listings
+          <span class="adm-link-badge alert">2</span>
+        </a>
+      </div>
+
+      <div class="adm-nav-group">
+        <div class="adm-nav-label">Commerce</div>
+        <a href="#" class="adm-link">
+          <span class="adm-link-ico">🛒</span> All Orders
+        </a>
+        <a href="#" class="adm-link">
+          <span class="adm-link-ico">💳</span> Transactions
+        </a>
+        <a href="#" class="adm-link">
+          <span class="adm-link-ico">⚖️</span> Disputes
+          <span class="adm-link-badge alert">1</span>
+        </a>
+      </div>
+
+      <div class="adm-nav-group">
+        <div class="adm-nav-label">Investments</div>
+        <a href="#" class="adm-link">
+          <span class="adm-link-ico">🌾</span> Farm Listings
+        </a>
+        <a href="#" class="adm-link">
+          <span class="adm-link-ico">📑</span> Active Portfolios
+        </a>
+        <a href="#" class="adm-link">
+          <span class="adm-link-ico">✅</span> Farmer Verification
+          <span class="adm-link-badge new">3 new</span>
+        </a>
+      </div>
+
+      <div class="adm-nav-group">
+        <div class="adm-nav-label">System</div>
+        <a href="#" class="adm-link">
+          <span class="adm-link-ico">⚙️</span> Settings
+        </a>
+        <a href="#" class="adm-link">
+          <span class="adm-link-ico">📋</span> Audit Logs
+        </a>
+        <a href="#" class="adm-link">
+          <span class="adm-link-ico">🔔</span> Notifications
+        </a>
+      </div>
+
+    </nav>
+
+    <div class="adm-sidebar-footer">
+      <div class="adm-version">AgroMart Admin v1.0.0</div>
+      <a href="{% url 'home' %}" class="adm-link">
+        <span class="adm-link-ico">🌿</span> Back to Site
+      </a>
+      <a href="{% url 'logout' %}" class="adm-link" style="color:var(--rust) !important">
+        <span class="adm-link-ico">←</span> Log Out
+      </a>
+    </div>
+
+  </aside>
+
+  <!-- ══ MAIN CONTENT ══ -->
+  <main class="adm-main">
+
+    <!-- ── Page Header ── -->
+    <div class="adm-header">
+      <div class="adm-header-left">
+        <div class="eyebrow">Admin Control Centre</div>
+        <h1 class="adm-title">Dashboard <span style="color:var(--t40);font-size:.7em">🛡️</span></h1>
+        <p class="adm-subtitle">
+          Welcome back, {{ request.user.get_short_name|default:request.user.username }} ·
+          <span id="admDate" style="font-family:var(--mono)"></span>
+        </p>
+      </div>
+      <div class="adm-header-right">
+        <div class="live-pill">
+          <span class="live-dot"></span>
+          System Operational
+        </div>
+        <a href="#" class="btn btn-ghost" style="padding:9px 18px;font-size:.84rem">📋 Audit Log</a>
+        <a href="#" class="btn" style="padding:9px 18px;font-size:.84rem;background:rgba(138,180,248,.12);border:1px solid rgba(138,180,248,.2);color:#8ab4f8">⚙️ Settings</a>
+      </div>
+    </div>
+
+    <!-- ── KPI Cards ── -->
+    <div class="kpi-grid">
+      <div class="kpi-card c-blue">
+        <span class="kpi-icon">👥</span>
+        <div class="kpi-label">Total Users</div>
+        <div class="kpi-value" data-count="{{ total_users|default:0 }}">{{ total_users|default:0 }}</div>
+        <span class="kpi-delta up">↑ +12 this week</span>
+      </div>
+      <div class="kpi-card c-green">
+        <span class="kpi-icon">👨‍🌾</span>
+        <div class="kpi-label">Total Sellers</div>
+        <div class="kpi-value" data-count="{{ total_sellers|default:0 }}">{{ total_sellers|default:0 }}</div>
+        <span class="kpi-delta up">↑ +3 this week</span>
+      </div>
+      <div class="kpi-card c-gold">
+        <span class="kpi-icon">📦</span>
+        <div class="kpi-label">Total Products</div>
+        <div class="kpi-value" data-count="{{ total_products|default:0 }}">{{ total_products|default:0 }}</div>
+        <span class="kpi-delta up">↑ +18 this week</span>
+      </div>
+      <div class="kpi-card c-rust">
+        <span class="kpi-icon">🛒</span>
+        <div class="kpi-label">Total Orders</div>
+        <div class="kpi-value" data-count="{{ total_orders|default:0 }}">{{ total_orders|default:0 }}</div>
+        <span class="kpi-delta flat">— No change</span>
+      </div>
+      <div class="kpi-card c-purple">
+        <span class="kpi-icon">💰</span>
+        <div class="kpi-label">Revenue (₦)</div>
+        <div class="kpi-value" style="font-size:1.5rem">₦{{ total_revenue|default:"0" }}</div>
+        <span class="kpi-delta up">↑ This month</span>
+      </div>
+    </div>
+
+    <!-- ── Row 1: Recent Users + Quick Actions ── -->
+    <div class="adm-grid-3-2" style="margin-bottom:20px">
+
+      <!-- Recent Users -->
+      <div class="panel">
+        <div class="panel-head">
+          <h3>👥 Recent Users</h3>
+          <div class="panel-head-right">
+            <a href="#" class="panel-link">View All →</a>
+          </div>
+        </div>
+        {% if recent_users %}
+        <div style="overflow-x:auto">
+          <table class="adm-table">
+            <thead>
+              <tr>
+                <th>User</th>
+                <th>Role</th>
+                <th>Joined</th>
+                <th>Status</th>
+                <th>Actions</th>
+              </tr>
+            </thead>
+            <tbody>
+  {% for user in recent_users %}
+  <tr>
+    <td>
+      <div class="user-cell">
+        <div class="user-ava-sm">
+          {{ user.email|default:"U"|first|upper }}
+        </div>
+        <div>
+          <div class="user-name">
+            {{ user.get_full_name|default:user.email }}
+          </div>
+          <div class="user-email">{{ user.email }}</div>
+        </div>
+      </div>
+    </td>
+
+    <td>
+      <span class="role-badge {{ user.profile.role|default:'buyer' }}">
+        {{ user.profile.role|default:"buyer" }}
+      </span>
+    </td>
+
+    <td class="mono">{{ user.date_joined|date:"d M Y" }}</td>
+
+    <td>
+      <span class="status-badge {% if user.is_active %}status-active{% else %}status-suspended{% endif %}">
+        {% if user.is_active %}Active{% else %}Suspended{% endif %}
+      </span>
+    </td>
+
+    <td>
+      <div class="tbl-actions">
+        <a href="#" class="tbl-btn view">View</a>
+        <a href="#" class="tbl-btn suspend">Suspend</a>
+      </div>
+    </td>
+  </tr>
+  {% endfor %}
+</tbody>
+          </table>
+        </div>
+        {% else %}
+        <div class="tbl-empty">
+          <div class="tbl-empty-ico">👥</div>
+          <p>No users registered yet. They'll appear here once people sign up.</p>
+        </div>
+        {% endif %}
+      </div>
+
+      <!-- Quick Actions -->
+      <div class="panel">
+        <div class="panel-head"><h3>⚡ Quick Actions</h3></div>
+        <div class="qa-grid">
+          <a href="#" class="qa-card">
+            <div class="qa-ico">👥</div>
+            <div class="qa-text">Manage Users<small>Roles &amp; access</small></div>
+          </a>
+          <a href="#" class="qa-card">
+            <div class="qa-ico">📦</div>
+            <div class="qa-text">Products<small>Review listings</small></div>
+          </a>
+          <a href="#" class="qa-card">
+            <div class="qa-ico">🛒</div>
+            <div class="qa-text">Orders<small>Track &amp; manage</small></div>
+          </a>
+          <a href="#" class="qa-card">
+            <div class="qa-ico">💳</div>
+            <div class="qa-text">Transactions<small>Payments log</small></div>
+          </a>
+          <a href="#" class="qa-card">
+            <div class="qa-ico">🚩</div>
+            <div class="qa-text">Flagged<small>Resolve reports</small></div>
+            <span class="qa-badge-num">2</span>
+          </a>
+          <a href="#" class="qa-card">
+            <div class="qa-ico">⚖️</div>
+            <div class="qa-text">Disputes<small>Open cases</small></div>
+            <span class="qa-badge-num">1</span>
+          </a>
+          <a href="#" class="qa-card">
+            <div class="qa-ico">🌾</div>
+            <div class="qa-text">Farm Verify<small>KYC review</small></div>
+            <span class="qa-badge-num" style="background:rgba(197,241,53,.15);color:var(--acid)">3</span>
+          </a>
+          <a href="#" class="qa-card">
+            <div class="qa-ico">⚙️</div>
+            <div class="qa-text">Settings<small>Platform config</small></div>
+          </a>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- ── Row 2: Orders + Activity ── -->
+    <div class="adm-grid-3-2" style="margin-bottom:20px">
+
+      <!-- Recent Orders -->
+      <div class="panel">
+        <div class="panel-head">
+          <h3>🛒 Recent Orders</h3>
+          <div class="panel-head-right">
+            <a href="#" class="panel-link">View All →</a>
+          </div>
+        </div>
+        {% if recent_orders %}
+        <div style="overflow-x:auto">
+          <table class="adm-table">
+            <thead>
+              <tr>
+                <th>Order ID</th>
+                <th>Buyer</th>
+                <th>Seller</th>
+                <th>Amount</th>
+                <th>Status</th>
+                <th>Actions</th>
+              </tr>
+            </thead>
+            <tbody>
+              {% for order in recent_orders %}
+              <tr>
+                <td class="mono" style="color:var(--acid)">#{{ order.id }}</td>
+                <td>{{ order.buyer.get_short_name|default:order.buyer.username }}</td>
+                <td>{{ order.seller.get_short_name|default:order.seller.username }}</td>
+                <td class="mono" style="color:var(--text);font-weight:700">₦{{ order.total }}</td>
+                <td><span class="status-badge status-{{ order.status }}">{{ order.status }}</span></td>
+                <td><div class="tbl-actions"><a href="#" class="tbl-btn view">View</a></div></td>
+              </tr>
+              {% endfor %}
+            </tbody>
+          </table>
+        </div>
+        {% else %}
+        <div class="tbl-empty">
+          <div class="tbl-empty-ico">🛒</div>
+          <p>No orders placed yet. They'll appear here once buyers start shopping.</p>
+        </div>
+        {% endif %}
+      </div>
+
+      <!-- Activity Feed -->
+      <div class="panel">
+        <div class="panel-head">
+          <h3>🔔 Recent Activity</h3>
+          <a href="#" class="panel-link">View Log →</a>
+        </div>
+        <div class="panel-body">
+          <div class="activity-feed">
+            <!-- Populated from context or static examples -->
+            {% if activity_log %}
+              {% for entry in activity_log %}
+              <div class="activity-item">
+                <div class="activity-ico {{ entry.color }}">{{ entry.icon }}</div>
+                <div class="activity-body">
+                  <p>{{ entry.message }}</p>
+                  <div class="activity-time">{{ entry.time }}</div>
+                </div>
+              </div>
+              {% endfor %}
+            {% else %}
+            <!-- Static demo log -->
+            <div class="activity-item">
+              <div class="activity-ico green">👨‍🌾</div>
+              <div class="activity-body">
+                <p><strong>New seller</strong> registered and awaiting approval.</p>
+                <div class="activity-time">2 minutes ago</div>
+              </div>
+            </div>
+            <div class="activity-item">
+              <div class="activity-ico blue">🛒</div>
+              <div class="activity-body">
+                <p><strong>Order #0041</strong> marked as delivered successfully.</p>
+                <div class="activity-time">18 minutes ago</div>
+              </div>
+            </div>
+            <div class="activity-item">
+              <div class="activity-ico gold">📦</div>
+              <div class="activity-body">
+                <p><strong>3 new products</strong> submitted for catalogue review.</p>
+                <div class="activity-time">45 minutes ago</div>
+              </div>
+            </div>
+            <div class="activity-item">
+              <div class="activity-ico rust">⚖️</div>
+              <div class="activity-body">
+                <p><strong>Dispute #005</strong> opened by buyer Adaeze O.</p>
+                <div class="activity-time">1 hour ago</div>
+              </div>
+            </div>
+            <div class="activity-item">
+              <div class="activity-ico purple">⟡</div>
+              <div class="activity-body">
+                <p><strong>GreenAcres Farm</strong> submitted investment listing for review.</p>
+                <div class="activity-time">3 hours ago</div>
+              </div>
+            </div>
+            <div class="activity-item">
+              <div class="activity-ico green">💳</div>
+              <div class="activity-body">
+                <p><strong>₦48,000</strong> payment verified via Paystack — Order #0039.</p>
+                <div class="activity-time">5 hours ago</div>
+              </div>
+            </div>
+            {% endif %}
+          </div>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- ── Row 3: Pending Sellers + Revenue + Health ── -->
+    <div class="adm-grid-3" style="margin-bottom:20px">
+
+      <!-- Pending Seller Approvals -->
+      <div class="panel">
+        <div class="panel-head">
+          <h3>👨‍🌾 Pending Approvals</h3>
+          <div class="panel-head-right">
+            {% if pending_sellers %}<span class="adm-link-badge alert" style="font-size:.65rem;padding:4px 10px">{{ pending_sellers }} pending</span>{% endif %}
+            <a href="#" class="panel-link">View All →</a>
+          </div>
+        </div>
+        <div class="panel-body">
+          {% if pending_seller_list %}
+            {% for seller in pending_seller_list %}
+            <div class="seller-approval-item">
+              <div class="seller-approval-ava">👨‍🌾</div>
+              <div class="seller-approval-info">
+                <div class="seller-approval-name">{{ seller.get_full_name|default:seller.username }}</div>
+                <div class="seller-approval-meta">{{ seller.email }} · Applied {{ seller.date_joined|date:"d M" }}</div>
+              </div>
+              <div class="seller-approval-actions">
+                <button class="tbl-btn approve">✓ Approve</button>
+                <button class="tbl-btn suspend">✗</button>
+              </div>
+            </div>
+            {% endfor %}
+          {% else %}
+          <!-- Demo items -->
+          <div class="seller-approval-item">
+            <div class="seller-approval-ava">👨‍🌾</div>
+            <div class="seller-approval-info">
+              <div class="seller-approval-name">Chukwuemeka Farms</div>
+              <div class="seller-approval-meta">chukwu@farm.ng · Applied 28 Jul</div>
+            </div>
+            <div class="seller-approval-actions">
+              <button class="tbl-btn approve">✓ Approve</button>
+              <button class="tbl-btn suspend">✗</button>
+            </div>
+          </div>
+          <div class="seller-approval-item">
+            <div class="seller-approval-ava">🌾</div>
+            <div class="seller-approval-info">
+              <div class="seller-approval-name">Sunshine Poultry Ltd</div>
+              <div class="seller-approval-meta">sunshine@poultry.ng · Applied 29 Jul</div>
+            </div>
+            <div class="seller-approval-actions">
+              <button class="tbl-btn approve">✓ Approve</button>
+              <button class="tbl-btn suspend">✗</button>
+            </div>
+          </div>
+          <div class="seller-approval-item">
+            <div class="seller-approval-ava">🐟</div>
+            <div class="seller-approval-info">
+              <div class="seller-approval-name">BlueLake Aquaculture</div>
+              <div class="seller-approval-meta">info@bluelake.ng · Applied 30 Jul</div>
+            </div>
+            <div class="seller-approval-actions">
+              <button class="tbl-btn approve">✓ Approve</button>
+              <button class="tbl-btn suspend">✗</button>
+            </div>
+          </div>
+          {% endif %}
+        </div>
+      </div>
+
+      <!-- Revenue Chart -->
+      <div class="panel">
+        <div class="panel-head">
+          <h3>📈 Revenue — 7 Days</h3>
+          <span style="font-family:var(--mono);font-size:.65rem;color:var(--t40)">₦ NGN</span>
+        </div>
+        <div class="panel-body">
+          <div class="rev-chart" id="revChart">
+            {% if weekly_revenue %}
+              {% for day in weekly_revenue %}
+              <div class="rev-row">
+                <span class="rev-label">{{ day.label }}</span>
+                <div class="rev-track"><div class="rev-fill green" data-pct="{{ day.pct }}" style="width:0%"></div></div>
+                <span class="rev-val">₦{{ day.amount }}</span>
+              </div>
+              {% endfor %}
+            {% else %}
+            <div class="rev-row"><span class="rev-label">Mon</span><div class="rev-track"><div class="rev-fill green" data-pct="0" style="width:0%"></div></div><span class="rev-val">₦0</span></div>
+            <div class="rev-row"><span class="rev-label">Tue</span><div class="rev-track"><div class="rev-fill green" data-pct="0" style="width:0%"></div></div><span class="rev-val">₦0</span></div>
+            <div class="rev-row"><span class="rev-label">Wed</span><div class="rev-track"><div class="rev-fill green" data-pct="0" style="width:0%"></div></div><span class="rev-val">₦0</span></div>
+            <div class="rev-row"><span class="rev-label">Thu</span><div class="rev-track"><div class="rev-fill green" data-pct="0" style="width:0%"></div></div><span class="rev-val">₦0</span></div>
+            <div class="rev-row"><span class="rev-label">Fri</span><div class="rev-track"><div class="rev-fill green" data-pct="0" style="width:0%"></div></div><span class="rev-val">₦0</span></div>
+            <div class="rev-row"><span class="rev-label">Sat</span><div class="rev-track"><div class="rev-fill green" data-pct="0" style="width:0%"></div></div><span class="rev-val">₦0</span></div>
+            <div class="rev-row"><span class="rev-label">Sun</span><div class="rev-track"><div class="rev-fill green" data-pct="0" style="width:0%"></div></div><span class="rev-val">₦0</span></div>
+            {% endif %}
+          </div>
+          {% if not weekly_revenue %}
+          <p style="font-size:.75rem;color:var(--t40);text-align:center;margin-top:16px;font-family:var(--mono)">Revenue data will populate once orders are placed.</p>
+          {% endif %}
+        </div>
+      </div>
+
+      <!-- Platform Health -->
+      <div class="panel">
+        <div class="panel-head">
+          <h3>💚 Platform Health</h3>
+          <span class="status-badge status-active" style="font-size:.6rem">All Systems Go</span>
+        </div>
+        <div class="panel-body">
+          <div class="health-grid">
+            <div class="health-item">
+              <div class="health-item-top">
+                <span class="health-label">Uptime</span>
+                <span class="health-val good">99.9%</span>
+              </div>
+              <div class="health-bar-track"><div class="health-bar-fill good" data-pct="99.9" style="width:0%"></div></div>
+            </div>
+            <div class="health-item">
+              <div class="health-item-top">
+                <span class="health-label">Order Fulfil.</span>
+                <span class="health-val good">98%</span>
+              </div>
+              <div class="health-bar-track"><div class="health-bar-fill good" data-pct="98" style="width:0%"></div></div>
+            </div>
+            <div class="health-item">
+              <div class="health-item-top">
+                <span class="health-label">Payment Success</span>
+                <span class="health-val good">97%</span>
+              </div>
+              <div class="health-bar-track"><div class="health-bar-fill good" data-pct="97" style="width:0%"></div></div>
+            </div>
+            <div class="health-item">
+              <div class="health-item-top">
+                <span class="health-label">Delivery On-Time</span>
+                <span class="health-val warn">82%</span>
+              </div>
+              <div class="health-bar-track"><div class="health-bar-fill warn" data-pct="82" style="width:0%"></div></div>
+            </div>
+            <div class="health-item">
+              <div class="health-item-top">
+                <span class="health-label">Dispute Rate</span>
+                <span class="health-val good">1.2%</span>
+              </div>
+              <div class="health-bar-track"><div class="health-bar-fill good" data-pct="1.2" style="width:0%"></div></div>
+            </div>
+            <div class="health-item">
+              <div class="health-item-top">
+                <span class="health-label">Seller Approval</span>
+                <span class="health-val warn">3 pending</span>
+              </div>
+              <div class="health-bar-track"><div class="health-bar-fill warn" data-pct="40" style="width:0%"></div></div>
+            </div>
+          </div>
+
+          <!-- Quick system links -->
+          <div style="display:flex;flex-direction:column;gap:6px;margin-top:20px">
+            <a href="#" class="adm-link" style="padding:8px 10px;border:1px solid var(--bd);border-radius:var(--r-md)">
+              <span class="adm-link-ico">📋</span> View Audit Logs
+            </a>
+            <a href="#" class="adm-link" style="padding:8px 10px;border:1px solid var(--bd);border-radius:var(--r-md)">
+              <span class="adm-link-ico">📧</span> Send Announcement
+            </a>
+            <a href="/admin/" class="adm-link" style="padding:8px 10px;border:1px solid rgba(138,180,248,.2);border-radius:var(--r-md);color:#8ab4f8 !important">
+              <span class="adm-link-ico">🐍</span> Django Admin
+            </a>
+          </div>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- ── Row 4: Products table ── -->
+    <div style="margin-bottom:20px">
+      <div class="panel">
+        <div class="panel-head">
+          <h3>📦 Recent Product Listings</h3>
+          <div class="panel-head-right">
+            <a href="#" class="panel-link">Manage All →</a>
+          </div>
+        </div>
+        {% if recent_products %}
+        <div style="overflow-x:auto">
+          <table class="adm-table">
+            <thead>
+              <tr>
+                <th>Product</th>
+                <th>Seller</th>
+                <th>Category</th>
+                <th>Price</th>
+                <th>Stock</th>
+                <th>Status</th>
+                <th>Actions</th>
+              </tr>
+            </thead>
+            <tbody>
+              {% for product in recent_products %}
+              <tr>
+                <td style="font-weight:600;color:var(--text)">{{ product.name }}</td>
+                <td>{{ product.seller.get_short_name|default:product.seller.username }}</td>
+                <td>{{ product.category|default:"—" }}</td>
+                <td class="mono" style="color:var(--acid)">₦{{ product.price }}<span style="color:var(--t40);font-size:.72rem"> / {{ product.unit }}</span></td>
+                <td class="mono">{{ product.quantity }}</td>
+                <td>
+                  <span class="status-badge {% if product.is_available %}status-active{% else %}status-suspended{% endif %}">
+                    {% if product.is_available %}Live{% else %}Hidden{% endif %}
+                  </span>
+                </td>
+                <td>
+                  <div class="tbl-actions">
+                    <a href="#" class="tbl-btn view">View</a>
+                    <a href="#" class="tbl-btn suspend">Remove</a>
+                  </div>
+                </td>
+              </tr>
+              {% endfor %}
+            </tbody>
+          </table>
+        </div>
+        {% else %}
+        <div class="tbl-empty">
+          <div class="tbl-empty-ico">📦</div>
+          <p>No products listed yet. They'll appear here once sellers start adding items.</p>
+        </div>
+        {% endif %}
+      </div>
+    </div>
+
+  </main>
+</div>
+{% endblock %}
+
+{% block extra_scripts %}
+<script>
+(()=>{
+  /* Date stamp */
+  const d = new Date();
+  const opts = { weekday:'long', day:'numeric', month:'long', year:'numeric' };
+  const el = document.getElementById('admDate');
+  if(el) el.textContent = d.toLocaleDateString('en-NG', opts);
+
+  /* Animate all bar fills on load */
+  setTimeout(() => {
+    document.querySelectorAll('[data-pct]').forEach(bar => {
+      bar.style.width = bar.dataset.pct + '%';
+    });
+  }, 350);
+
+  /* Animated KPI counters */
+  function runCounter(el) {
+    const num = parseFloat(el.dataset.count);
+    if (isNaN(num) || num === 0) return;
+    const dur = 1600; let start = null;
+    const step = ts => {
+      if (!start) start = ts;
+      const p = Math.min((ts - start) / dur, 1);
+      const e = 1 - Math.pow(1 - p, 4);
+      el.textContent = Math.round(e * num);
+      if (p < 1) requestAnimationFrame(step);
+    };
+    requestAnimationFrame(step);
+  }
+  const cntObs = new IntersectionObserver(entries => {
+    entries.forEach(e => {
+      if (e.isIntersecting) {
+        e.target.querySelectorAll('[data-count]').forEach(runCounter);
+        cntObs.unobserve(e.target);
+      }
+    });
+  }, { threshold: .4 });
+  document.querySelectorAll('.kpi-grid').forEach(g => cntObs.observe(g));
+
+  /* Mobile sidebar */
+  const ham     = document.getElementById('hamburger');
+  const sidebar = document.getElementById('admSidebar');
+  if (ham && sidebar) ham.addEventListener('click', () => sidebar.classList.toggle('mobile-open'));
+
+  /* Approval buttons feedback */
+  document.querySelectorAll('.tbl-btn.approve').forEach(btn => {
+    btn.addEventListener('click', function() {
+      const row = this.closest('.seller-approval-item');
+      const name = row.querySelector('.seller-approval-name').textContent;
+      row.style.opacity = '.4';
+      row.style.pointerEvents = 'none';
+      if (window.toast) window.toast('Seller approved ✓', name + ' can now list products');
+    });
+  });
+
+  document.querySelectorAll('.tbl-btn.suspend').forEach(btn => {
+    btn.addEventListener('click', function() {
+      const row = this.closest('.seller-approval-item');
+      if (!row) return;
+      row.style.opacity = '.3';
+      row.style.pointerEvents = 'none';
+      if (window.toast) window.toast('Application declined', '', 3000);
+    });
+  });
+})();
+</script>
+{% endblock %}

@@ -1,0 +1,34 @@
+<!-- Overlay backdrop -->
+<div class="profile-overlay">
+  <div class="profile-modal">
+    <h2>Welcome to AgroMart 👋</h2>
+    <p>Complete your profile to get started.</p>
+
+    <form method="POST">
+      {% csrf_token %}
+      <div class="field-group">
+        <label>First Name</label>
+        {{ form.first_name }}
+      </div>
+      <div class="field-group">
+        <label>Last Name</label>
+        {{ form.last_name }}
+      </div>
+      <div class="field-group">
+        <label>Phone Number</label>
+        {{ form.phone }}
+      </div>
+      <div class="field-group">
+        <label>Product Category</label>
+        {{ form.category }}
+      </div>
+      <div class="field-group consent">
+        {{ form.consent }} <label>{{ form.consent.label }}</label>
+      </div>
+      {% if form.errors %}
+        <div class="form-errors">Please fix the errors above.</div>
+      {% endif %}
+      <button type="submit" class="btn btn-green">Save & Continue</button>
+    </form>
+  </div>
+</div>

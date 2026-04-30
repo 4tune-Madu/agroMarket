@@ -138,3 +138,6 @@ AUTHENTICATION_BACKENDS = [
     'accounts.backends.CaseInsensitiveEmailBackend',
     'django.contrib.auth.backends.ModelBackend',
 ]
+
+MEDIA_URL = '/media/'
+MEDIA_ROOT = BASE_DIR / 'media'
