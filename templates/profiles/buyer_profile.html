@@ -1,0 +1,17 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+<h1>Buyer Profile 👤</h1>
+
+<p>Welcome {{ request.user.email }}</p>
+
+<hr>
+
+<ul>
+    <li><a href="/products/cart/">My Cart</a></li>
+    <li><a href="#">My Orders</a></li>
+    <li><a href="#">Saved Products</a></li>
+</ul>
+
+{% endblock %}

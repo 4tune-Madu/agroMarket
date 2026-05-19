@@ -8,18 +8,15 @@
 
     <ul>
         {% for item in cart_items %}
-            <li>
-                <strong>{{ item.product.name }}</strong>
-                <br>
-                Quantity: {{ item.quantity }}
-                <br>
-                Subtotal: ₦{{ item.subtotal }}
+  <div>
+    <h3>{{ item.product.name }}</h3>
 
-                <br>
+    <p>Quantity: {{ item.quantity }}</p>
+    <p>Subtotal: ₦{{ item.subtotal }}</p>
 
-                <a href="/products/cart/remove/{{ item.product.id }}/">Remove</a>
-            </li>
-        {% endfor %}
+    <a href="/products/cart/remove/{{ item.product.id }}/">Remove</a>
+  </div>
+{% endfor %}
     </ul>
 
     <hr>

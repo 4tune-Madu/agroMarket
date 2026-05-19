@@ -3,13 +3,13 @@ class Cart:
         self.session = request.session
         self.cart = self.session.get('cart', {})
 
-    def add(self, product_id):
+    def add(self, product_id, quantity=1):
         product_id = str(product_id)
 
         if product_id in self.cart:
-            self.cart[product_id] += 1
+            self.cart[product_id] += quantity
         else:
-            self.cart[product_id] = 1
+            self.cart[product_id] = quantity
 
         self.save()
 
@@ -19,6 +19,16 @@ class Cart:
         if product_id in self.cart:
             del self.cart[product_id]
             self.save()
+
+    def update(self, product_id, quantity):
+        product_id = str(product_id)
+
+        if quantity > 0:
+            self.cart[product_id] = quantity
+        else:
+            self.cart.pop(product_id, None)
+
+        self.save()
 
     def clear(self):
         self.session['cart'] = {}

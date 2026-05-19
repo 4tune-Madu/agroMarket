@@ -1,4 +1,6 @@
 from django.shortcuts import render
+from .models import Category
+from .forms import CategoryForm
 
 # Create your views here.
 from django.shortcuts import render, redirect
@@ -94,7 +96,8 @@ from django.shortcuts import get_object_or_404
 
 def add_to_cart(request, product_id):
     cart = Cart(request)
-    cart.add(product_id)
+    cart.add(product_id, quantity=1)  # 👈 key fix
+
     return redirect('cart_detail')
 
 def remove_from_cart(request, product_id):
@@ -125,4 +128,26 @@ def cart_detail(request):
     return render(request, 'products/cart_detail.html', {
         'cart_items': cart_items,
         'total': total
+    })
+
+from django.contrib.auth.decorators import login_required
+
+
+@login_required
+def categories_view(request):
+    categories = Category.objects.all().order_by('name')
+
+    form = CategoryForm(request.POST or None)
+
+    if request.method == "POST" and form.is_valid():
+        category = form.save(commit=False)
+
+        category.created_by = request.user
+        category.save()
+
+        return redirect('categories')
+
+    return render(request, 'products/categories.html', {
+        'categories': categories,
+        'form': form,
     })

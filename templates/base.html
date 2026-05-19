@@ -238,8 +238,8 @@
 
   <ul class="nav-links">
     <li><a href="{% url 'home' %}" class="{% if request.resolver_match.url_name == 'home' %}active{% endif %}">Home</a></li>
-    <li><a href="#">Shop</a></li>
-    <li><a href="#">Categories</a></li>
+    <li><a href="{% url 'product_list' %}">Shop</a></li>
+    <li><a href="{% url 'categories' %}">Categories</a></li>
     <li><a href="#">Farmers</a></li>
     <li class="invest-link"><a href="#">⟡ Invest</a></li>
     <li><a href="#">How it Works</a></li>
@@ -292,7 +292,7 @@
   <ul>
     <li><a href="{% url 'home' %}">Home</a></li>
     <li><a href="#">Shop</a></li>
-    <li><a href="#">Categories</a></li>
+    <li><a href="{% url 'categories' %}">Categories</a></li>
     <li><a href="#">Farmers</a></li>
     <li><a href="#" style="color:var(--acid)">⟡ Invest</a></li>
     <li><a href="#">How it Works</a></li>

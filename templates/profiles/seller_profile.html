@@ -1,0 +1,17 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+<h1>Seller Profile 🌾</h1>
+
+<p>Welcome {{ request.user.email }}</p>
+
+<hr>
+
+<ul>
+    <li><a href="/dashboard/seller/">Seller Dashboard</a></li>
+    <li><a href="/products/my-products/">My Products</a></li>
+    <li><a href="/products/add/">Add Product</a></li>
+</ul>
+
+{% endblock %}

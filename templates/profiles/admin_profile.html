@@ -1,0 +1,16 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+<h1>Admin Profile 🛡️</h1>
+
+<p>Welcome {{ request.user.email }}</p>
+
+<hr>
+
+<ul>
+    <li><a href="/dashboard/admin/">Admin Dashboard</a></li>
+    <li><a href="/admin/">Django Admin</a></li>
+</ul>
+
+{% endblock %}

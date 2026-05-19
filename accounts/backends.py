@@ -1,4 +1,4 @@
-#This makes the email  case-Insensitive
+#This makes the email  case-Insensitive ----> Liked to Authetication-Backends in settings.py
 
 from django.contrib.auth.backends import ModelBackend
 from django.contrib.auth import get_user_model
