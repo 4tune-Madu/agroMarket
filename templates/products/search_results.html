@@ -1,0 +1,43 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+<h1>Search Results 🔍</h1>
+
+{% if query %}
+    <p>Results for: <strong>{{ query }}</strong></p>
+{% endif %}
+
+<hr>
+
+{% if products %}
+
+<div style="display:grid; grid-template-columns: repeat(3, 1fr); gap:20px;">
+
+    {% for product in products %}
+        <div style="border:1px solid #ddd; padding:10px;">
+
+            {% if product.image %}
+                <img src="{{ product.image.url }}" width="100%" height="150">
+            {% endif %}
+
+            <h3>{{ product.name }}</h3>
+
+            <p><strong>₦{{ product.price }}</strong></p>
+
+            <p>Seller: {{ product.seller.email }}</p>
+
+            <a href="/products/cart/add/{{ product.id }}/">
+                Add to Cart
+            </a>
+
+        </div>
+    {% endfor %}
+
+</div>
+
+{% else %}
+    <p>No products found matching your search.</p>
+{% endif %}
+
+{% endblock %}

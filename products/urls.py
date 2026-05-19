@@ -3,6 +3,7 @@ from .views import add_product, seller_products, edit_product, delete_product, p
 from .views import add_to_cart, remove_from_cart, cart_detail
 from .views import categories_view
 from .views import category_detail
+from .views import product_search
 
 urlpatterns = [
     path('add/', add_product, name='add_product'),
@@ -15,4 +16,5 @@ urlpatterns = [
     path('cart/remove/<int:product_id>/', remove_from_cart, name='remove_from_cart'),
     path('categories/', categories_view, name='categories'),
     path('categories/<int:category_id>/', category_detail, name='category_detail'),
+    path('search/', product_search, name='product_search'),
 ]

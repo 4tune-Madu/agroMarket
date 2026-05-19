@@ -384,28 +384,46 @@
   </div>
 </div>
 
-<!-- ══ SEARCH (below ticker, no overlap) ══ -->
-<section class="search-wrap rv">
-  <div class="search-card">
-    <div class="search-hint">What are you looking for today?</div>
-    <div class="search-bar-wrap">
-      <span>🔍</span>
-      <input type="text" id="searchInput" placeholder="Search products, farms, categories…" autocomplete="off" />
-      <button type="button">Search</button>
+<form action="{% url 'product_search' %}" method="GET">
+
+  <!-- ══ SEARCH (below ticker, no overlap) ══ -->
+  <section class="search-wrap rv">
+    <div class="search-card">
+
+      <div class="search-hint">
+        What are you looking for today?
+      </div>
+
+      <div class="search-bar-wrap">
+        <span>🔍</span>
+
+        <input 
+          type="text" 
+          id="searchInput"
+          name="q"
+          placeholder="Search products, farms, categories…"
+          autocomplete="off"
+        />
+
+        <button type="submit">Search</button>
+      </div>
+
+      <div class="search-tags">
+        <a href="{% url 'product_search' %}?q=leafy greens" class="s-tag">🥬 Leafy Greens</a>
+        <a href="{% url 'product_search' %}?q=tomatoes" class="s-tag">🍅 Tomatoes</a>
+        <a href="{% url 'product_search' %}?q=maize" class="s-tag">🌽 Maize & Grains</a>
+        <a href="{% url 'product_search' %}?q=catfish" class="s-tag">🐟 Catfish</a>
+        <a href="{% url 'product_search' %}?q=poultry" class="s-tag">🐓 Poultry & Eggs</a>
+        <a href="{% url 'product_search' %}?q=pepper" class="s-tag">🌶 Peppers & Spices</a>
+        <a href="{% url 'product_search' %}?q=animal feed" class="s-tag">🐄 Animal Feeds</a>
+        <a href="{% url 'product_search' %}?q=farm tools" class="s-tag">🔧 Farm Tools</a>
+        <a href="{% url 'product_search' %}?q=season box" class="s-tag">📦 Season Box</a>
+      </div>
+
     </div>
-    <div class="search-tags">
-      <a href="#" class="s-tag">🥬 Leafy Greens</a>
-      <a href="#" class="s-tag">🍅 Tomatoes</a>
-      <a href="#" class="s-tag">🌽 Maize &amp; Grains</a>
-      <a href="#" class="s-tag">🐟 Catfish</a>
-      <a href="#" class="s-tag">🐓 Poultry &amp; Eggs</a>
-      <a href="#" class="s-tag">🌶 Peppers &amp; Spices</a>
-      <a href="#" class="s-tag">🐄 Animal Feeds</a>
-      <a href="#" class="s-tag">🔧 Farm Tools</a>
-      <a href="#" class="s-tag">📦 Season Box</a>
-    </div>
-  </div>
-</section>
+  </section>
+
+</form>
 
 <!-- ══ CATEGORIES ══ -->
 <section class="cat-section">

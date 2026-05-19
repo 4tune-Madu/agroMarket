@@ -165,3 +165,22 @@ def category_detail(request, category_id):
         'category': category,
         'products': products,
     })
+
+from django.db.models import Q
+
+
+def product_search(request):
+    query = request.GET.get('q', '')
+
+    products = Product.objects.all()
+
+    if query:
+        products = products.filter(
+            Q(name__icontains=query) |
+            Q(description__icontains=query)
+        ).distinct()
+
+    return render(request, 'products/search_results.html', {
+        'products': products,
+        'query': query
+    })
