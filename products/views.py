@@ -151,3 +151,17 @@ def categories_view(request):
         'categories': categories,
         'form': form,
     })
+
+from django.shortcuts import get_object_or_404
+from .models import Category, Product
+
+
+def category_detail(request, category_id):
+    category = get_object_or_404(Category, id=category_id)
+
+    products = Product.objects.filter(categories=category).order_by('-created_at')
+
+    return render(request, 'products/category_detail.html', {
+        'category': category,
+        'products': products,
+    })

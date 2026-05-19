@@ -10,8 +10,10 @@
 <ul>
     {% for category in categories %}
         <li>
-            {{ category.name }}
-        </li>
+    <a href="{% url 'category_detail' category.id %}">
+        {{ category.name }}
+    </a>
+</li>
     {% empty %}
         <li>No categories yet.</li>
     {% endfor %}
