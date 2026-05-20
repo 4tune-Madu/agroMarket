@@ -361,7 +361,7 @@
         <span class="bh-sidebar-link-ico">📦</span> My Orders
         {% if pending_orders %}<span class="bh-sidebar-badge">{{ pending_orders }}</span>{% endif %}
       </a>
-      <a href="#" class="bh-sidebar-link">
+      <a href="{% url 'wishlist' %}" class="bh-sidebar-link">
         <span class="bh-sidebar-link-ico">❤️</span> Wishlist
       </a>
       <a href="{% url 'profile' %}" class="bh-sidebar-link">

@@ -5,6 +5,11 @@ from .views import categories_view
 from .views import category_detail
 from .views import product_search
 from .views import product_detail
+from .views import (
+    add_to_wishlist,
+    remove_from_wishlist,
+    wishlist_view,
+)
 
 urlpatterns = [
     path('add/', add_product, name='add_product'),
@@ -19,4 +24,7 @@ urlpatterns = [
     path('categories/<int:category_id>/', category_detail, name='category_detail'),
     path('search/', product_search, name='product_search'),
     path('<int:product_id>/', product_detail, name='product_detail'),
+    path('wishlist/', wishlist_view, name='wishlist'),
+    path('wishlist/add/<int:product_id>/', add_to_wishlist,name='add_to_wishlist'),
+    path('wishlist/remove/<int:product_id>/', remove_from_wishlist, name='remove_from_wishlist'),
 ]

@@ -190,6 +190,8 @@
 
       <div class="pcard-foot">
         <a href="/products/cart/add/{{ product.id }}/" class="btn-cart">+ Add to Cart</a>
+        
+        <a href="{% url 'add_to_wishlist' product.id %}" class="btn-cart">Add to Wishlist ❤️</a>
       </div>
 
     </div>

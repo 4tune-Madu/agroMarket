@@ -30,6 +30,10 @@
             <a href="/products/cart/add/{{ product.id }}/">
                 Add to Cart
             </a>
+            <br><br>
+            <a href="{% url 'add_to_wishlist' product.id %}">
+                Add to Wishlist ❤️ 
+            </a>
 
         </div>
     {% endfor %}

@@ -46,6 +46,7 @@ INSTALLED_APPS = [
     'payments',
     'core',
     'dashboard',
+    'chat',
 ]
 
 
