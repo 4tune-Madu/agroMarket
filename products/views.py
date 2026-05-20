@@ -169,18 +169,55 @@ def category_detail(request, category_id):
 from django.db.models import Q
 
 
+from django.db.models import Q
+from difflib import get_close_matches
+from .models import Product
+
+
 def product_search(request):
-    query = request.GET.get('q', '')
+    query = request.GET.get('q', '').strip()
 
     products = Product.objects.all()
 
     if query:
-        products = products.filter(
+        # 1️⃣ Normal search (fast DB filter)
+        filtered = products.filter(
             Q(name__icontains=query) |
             Q(description__icontains=query)
-        ).distinct()
+        )
+
+        # 2️⃣ If results exist → return them
+        if filtered.exists():
+            products = filtered
+
+        else:
+            # 3️⃣ SMART FALLBACK (typo handling)
+            all_products = Product.objects.all()
+
+            product_names = [p.name for p in all_products]
+
+            matches = get_close_matches(query, product_names, n=5, cutoff=0.4)
+
+            products = all_products.filter(name__in=matches)
 
     return render(request, 'products/search_results.html', {
         'products': products,
         'query': query
+    })
+
+
+from django.shortcuts import render, get_object_or_404
+from .models import Product
+
+
+def product_detail(request, product_id):
+    product = get_object_or_404(Product, id=product_id)
+
+    related_products = Product.objects.filter(
+        categories__in=product.categories.all()
+    ).exclude(id=product.id).distinct()[:4]
+
+    return render(request, 'products/product_detail.html', {
+        'product': product,
+        'related_products': related_products,
     })

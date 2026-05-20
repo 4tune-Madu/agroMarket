@@ -1,17 +1,497 @@
 {% extends "base.html" %}
+{% block title %}Seller Profile — AgroMart{% endblock %}
+
+{% block extra_styles %}
+
+/* ─── SELLER PROFILE ─── */
+.seller-hero {
+  padding: calc(var(--nav-h) + 60px) 52px 0;
+  position: relative;
+  overflow: hidden;
+}
+.seller-hero::before {
+  content: 'SELLER';
+  position: absolute;
+  top: 60px;
+  right: -20px;
+  font-family: var(--serif);
+  font-size: 11rem;
+  font-weight: 900;
+  color: rgba(197,241,53,.03);
+  letter-spacing: -.04em;
+  pointer-events: none;
+  white-space: nowrap;
+  user-select: none;
+}
+
+.seller-header {
+  display: flex; align-items: center; gap: 28px;
+  margin-bottom: 48px;
+  position: relative; z-index: 1;
+}
+.seller-avatar {
+  width: 80px; height: 80px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, var(--forest), var(--acid));
+  display: flex; align-items: center; justify-content: center;
+  font-size: 2rem; flex-shrink: 0;
+  box-shadow: 0 0 0 4px rgba(197,241,53,.15), 0 0 0 8px rgba(197,241,53,.06);
+}
+.seller-badge {
+  display: inline-flex; align-items: center; gap: 7px;
+  padding: 4px 12px;
+  background: rgba(197,241,53,.1);
+  border: 1px solid rgba(197,241,53,.30);
+  border-radius: 100px;
+  font-family: var(--mono);
+  font-size: .65rem;
+  text-transform: uppercase;
+  letter-spacing: .14em;
+  color: var(--acid);
+  margin-bottom: 10px;
+}
+.seller-badge-dot {
+  width: 6px; height: 6px;
+  background: var(--acid); border-radius: 50%;
+  animation: blink 2s ease-in-out infinite;
+}
+@keyframes blink {
+  0%,100%{opacity:1;transform:scale(1)}
+  50%{opacity:.35;transform:scale(.65)}
+}
+.seller-header-text h1 {
+  font-family: var(--serif);
+  font-size: clamp(1.6rem,3vw,2.4rem);
+  font-weight: 900;
+  letter-spacing: -.03em;
+  color: var(--text); margin-bottom: 6px;
+}
+.seller-email { font-family: var(--mono); font-size: .78rem; color: var(--t40); }
+
+/* ─── GRID ─── */
+.seller-grid {
+  display: grid;
+  grid-template-columns: 260px 1fr;
+  gap: 24px;
+  padding: 0 52px 100px;
+  position: relative; z-index: 1;
+}
+
+/* ─── SIDEBAR ─── */
+.seller-sidebar { display: flex; flex-direction: column; gap: 12px; }
+
+.seller-nav-card {
+  background: rgba(255,255,255,.04);
+  border: 1px solid var(--bd);
+  border-radius: var(--r-xl);
+  overflow: hidden;
+}
+.seller-nav-label {
+  font-family: var(--mono);
+  font-size: .63rem;
+  text-transform: uppercase;
+  letter-spacing: .15em;
+  color: var(--t40);
+  padding: 16px 20px 10px;
+}
+.seller-nav-link {
+  display: flex; align-items: center; gap: 12px;
+  padding: 13px 20px;
+  font-size: .88rem; font-weight: 500;
+  color: var(--t70) !important;
+  text-decoration: none !important;
+  transition: background .2s, color .2s;
+  border-top: 1px solid rgba(255,255,255,.04);
+}
+.seller-nav-link:hover {
+  background: rgba(197,241,53,.07);
+  color: var(--text) !important;
+}
+.seller-nav-link.primary { color: var(--acid) !important; background: var(--acid-dim); }
+.seller-nav-link.primary:hover { background: rgba(197,241,53,.12); }
+.seller-nav-link .snl-ico {
+  width: 32px; height: 32px; border-radius: var(--r-sm);
+  background: rgba(255,255,255,.06);
+  display: flex; align-items: center; justify-content: center;
+  font-size: .9rem; flex-shrink: 0; transition: background .2s;
+}
+.seller-nav-link:hover .snl-ico { background: rgba(197,241,53,.12); }
+.seller-nav-link.primary .snl-ico { background: rgba(197,241,53,.12); }
+.seller-nav-link .snl-arrow {
+  margin-left: auto; font-size: .7rem; color: var(--t40);
+  transition: transform .2s, color .2s;
+}
+.seller-nav-link:hover .snl-arrow { transform: translateX(3px); color: var(--acid); }
+
+/* ─── MAIN ─── */
+.seller-main { display: flex; flex-direction: column; gap: 20px; }
+
+/* ─── STAT CARDS ─── */
+.seller-stats { display: grid; grid-template-columns: repeat(4,1fr); gap: 14px; }
+.sstat-card {
+  background: rgba(255,255,255,.04);
+  border: 1px solid var(--bd);
+  border-radius: var(--r-xl);
+  padding: 20px 22px;
+  position: relative; overflow: hidden;
+  transition: border-color .3s, transform .4s var(--expo);
+  cursor: none;
+}
+.sstat-card::after {
+  content: '';
+  position: absolute; top: 0; right: 0;
+  width: 60px; height: 60px;
+  background: radial-gradient(circle at top right,rgba(197,241,53,.06),transparent);
+}
+.sstat-card:hover { border-color: var(--bd-h); transform: translateY(-3px); }
+.sstat-ico { font-size: 1.2rem; margin-bottom: 10px; display: block; }
+.sstat-val {
+  font-family: var(--mono);
+  font-size: 1.35rem; font-weight: 700;
+  color: var(--acid); display: block; margin-bottom: 4px;
+}
+.sstat-label { font-size: .75rem; color: var(--t40); line-height: 1.4; }
+.sstat-card.highlight { border-color: rgba(197,241,53,.2); background: rgba(26,48,28,.8); }
+
+/* ─── INFO CARD ─── */
+.info-card {
+  background: rgba(255,255,255,.04);
+  border: 1px solid var(--bd);
+  border-radius: var(--r-xl); overflow: hidden;
+}
+.info-card-head {
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 20px 24px; border-bottom: 1px solid var(--bd);
+}
+.info-card-head h3 { font-weight: 700; font-size: .95rem; color: var(--text); }
+.info-card-head a {
+  font-family: var(--mono); font-size: .65rem;
+  color: var(--acid) !important; text-transform: uppercase;
+  letter-spacing: .1em; text-decoration: none !important;
+  transition: opacity .2s;
+}
+.info-card-head a:hover { opacity: .7; }
+.info-row {
+  display: flex; align-items: center; gap: 16px;
+  padding: 15px 24px;
+  border-bottom: 1px solid rgba(255,255,255,.04);
+  transition: background .2s;
+}
+.info-row:last-child { border-bottom: none; }
+.info-row:hover { background: rgba(255,255,255,.03); }
+.info-row-label {
+  font-family: var(--mono); font-size: .7rem;
+  text-transform: uppercase; letter-spacing: .1em;
+  color: var(--t40); width: 130px; flex-shrink: 0;
+}
+.info-row-val { font-size: .88rem; color: var(--text); }
+.info-row-val.green { color: var(--acid); }
+
+/* ─── PRODUCTS EMPTY ─── */
+.products-empty {
+  background: rgba(255,255,255,.03);
+  border: 1px dashed rgba(255,255,255,.1);
+  border-radius: var(--r-xl);
+  padding: 52px 24px; text-align: center;
+}
+.products-empty-ico { font-size: 2.5rem; margin-bottom: 16px; display: block; opacity: .5; }
+.products-empty h4 { font-weight: 600; font-size: .95rem; margin-bottom: 8px; color: var(--text); }
+.products-empty p {
+  font-size: .85rem; color: var(--t40); line-height: 1.7;
+  max-width: 300px; margin: 0 auto 24px;
+}
+
+/* ─── SECTION DIVIDER ─── */
+.section-divider {
+  display: flex; align-items: center; gap: 12px; margin: 4px 0;
+}
+.section-divider span {
+  font-family: var(--mono); font-size: .65rem;
+  text-transform: uppercase; letter-spacing: .14em;
+  color: var(--t40); white-space: nowrap;
+}
+.section-divider::before,.section-divider::after {
+  content: ''; flex: 1; height: 1px; background: var(--bd);
+}
+
+/* ─── ACTION GRID ─── */
+.quick-actions { display: grid; grid-template-columns: repeat(2,1fr); gap: 14px; }
+.action-btn {
+  display: flex; align-items: center; gap: 14px;
+  padding: 18px 20px;
+  background: rgba(255,255,255,.04);
+  border: 1px solid var(--bd);
+  border-radius: var(--r-lg);
+  color: var(--t70) !important;
+  text-decoration: none !important;
+  font-size: .88rem; font-weight: 500;
+  transition: background .3s, border-color .3s, transform .35s var(--expo);
+  cursor: none;
+}
+.action-btn:hover {
+  background: rgba(197,241,53,.07);
+  border-color: var(--bd-h);
+  color: var(--text) !important;
+  transform: translateY(-3px);
+}
+.action-btn.cta {
+  background: var(--acid-dim);
+  border-color: rgba(197,241,53,.25);
+  color: var(--acid) !important;
+}
+.action-btn.cta:hover { background: rgba(197,241,53,.15); border-color: rgba(197,241,53,.4); }
+.action-btn.danger { color: var(--rust) !important; border-color: rgba(200,92,56,.2); }
+.action-btn.danger:hover { background: rgba(200,92,56,.1); border-color: rgba(200,92,56,.4); }
+.action-btn-ico {
+  width: 38px; height: 38px; border-radius: var(--r-sm);
+  background: rgba(255,255,255,.06);
+  display: flex; align-items: center; justify-content: center;
+  font-size: 1rem; flex-shrink: 0;
+}
+.action-btn:hover .action-btn-ico { background: rgba(197,241,53,.12); }
+.action-btn.cta .action-btn-ico { background: rgba(197,241,53,.12); }
+.action-btn.danger .action-btn-ico { background: rgba(200,92,56,.1); }
+.action-btn-text strong { display: block; font-size: .88rem; margin-bottom: 2px; }
+.action-btn-text span { font-size: .72rem; color: var(--t40); font-family: var(--mono); }
+
+/* ─── RESPONSIVE ─── */
+@media(max-width:1024px){ .seller-stats { grid-template-columns:repeat(2,1fr); } }
+@media(max-width:900px){
+  .seller-hero,.seller-grid { padding-left:28px;padding-right:28px; }
+  .seller-grid { grid-template-columns:1fr; }
+  .seller-hero::before { display:none; }
+}
+@media(max-width:600px){
+  .seller-stats { grid-template-columns:1fr 1fr; }
+  .quick-actions { grid-template-columns:1fr; }
+  .seller-header { flex-direction:column;align-items:flex-start;gap:16px; }
+}
+
+{% endblock %}
 
 {% block content %}
 
-<h1>Seller Profile 🌾</h1>
+<!-- ══ HERO ══ -->
+<section class="seller-hero">
+  <div class="seller-header rv">
+    <div class="seller-avatar">👨‍🌾</div>
+    <div class="seller-header-text">
+      <div class="seller-badge">
+        <span class="seller-badge-dot"></span>
+        Verified Seller
+      </div>
+      <h1>Welcome back, {{ request.user.get_short_name|default:request.user.username }}</h1>
+      <span class="seller-email">{{ request.user.email }}</span>
+    </div>
+  </div>
+</section>
 
-<p>Welcome {{ request.user.email }}</p>
+<!-- ══ GRID ══ -->
+<div class="seller-grid">
 
-<hr>
+  <!-- SIDEBAR -->
+  <aside class="seller-sidebar rv">
 
-<ul>
-    <li><a href="/dashboard/seller/">Seller Dashboard</a></li>
-    <li><a href="/products/my-products/">My Products</a></li>
-    <li><a href="/products/add/">Add Product</a></li>
-</ul>
+    <div class="seller-nav-card">
+      <div class="seller-nav-label">Selling</div>
+      <a href="/dashboard/seller/" class="seller-nav-link primary">
+        <span class="snl-ico">📊</span>
+        Seller Dashboard
+        <span class="snl-arrow">→</span>
+      </a>
+      <a href="/products/my-products/" class="seller-nav-link">
+        <span class="snl-ico">📦</span>
+        My Products
+        <span class="snl-arrow">→</span>
+      </a>
+      <a href="/products/add/" class="seller-nav-link">
+        <span class="snl-ico">➕</span>
+        Add Product
+        <span class="snl-arrow">→</span>
+      </a>
+      <a href="#" class="seller-nav-link">
+        <span class="snl-ico">🧾</span>
+        My Orders
+        <span class="snl-arrow">→</span>
+      </a>
+      <a href="#" class="seller-nav-link">
+        <span class="snl-ico">💰</span>
+        Earnings
+        <span class="snl-arrow">→</span>
+      </a>
+    </div>
+
+    <div class="seller-nav-card">
+      <div class="seller-nav-label">Farm &amp; Profile</div>
+      <a href="#" class="seller-nav-link">
+        <span class="snl-ico">🌾</span>
+        Farm Profile
+        <span class="snl-arrow">→</span>
+      </a>
+      <a href="#" class="seller-nav-link">
+        <span class="snl-ico">⟡</span>
+        Apply for Funding
+        <span class="snl-arrow">→</span>
+      </a>
+      <a href="#" class="seller-nav-link">
+        <span class="snl-ico">✏️</span>
+        Edit Profile
+        <span class="snl-arrow">→</span>
+      </a>
+      <a href="{% url 'logout' %}" class="seller-nav-link" style="color:var(--rust)!important">
+        <span class="snl-ico" style="background:rgba(200,92,56,.1)">←</span>
+        Log Out
+        <span class="snl-arrow">→</span>
+      </a>
+    </div>
+
+  </aside>
+
+  <!-- MAIN -->
+  <div class="seller-main">
+
+    <!-- STATS -->
+    <div class="seller-stats">
+      <div class="sstat-card rv">
+        <span class="sstat-ico">📦</span>
+        <span class="sstat-val">0</span>
+        <span class="sstat-label">Active Listings</span>
+      </div>
+      <div class="sstat-card rv d1">
+        <span class="sstat-ico">🧾</span>
+        <span class="sstat-val">0</span>
+        <span class="sstat-label">Orders Received</span>
+      </div>
+      <div class="sstat-card rv d2 highlight">
+        <span class="sstat-ico">💰</span>
+        <span class="sstat-val">₦0</span>
+        <span class="sstat-label">Total Earnings</span>
+      </div>
+      <div class="sstat-card rv d3">
+        <span class="sstat-ico">⭐</span>
+        <span class="sstat-val">—</span>
+        <span class="sstat-label">Avg. Rating</span>
+      </div>
+    </div>
+
+    <!-- ACCOUNT INFO -->
+    <div class="info-card rv">
+      <div class="info-card-head">
+        <h3>Seller Information</h3>
+        <a href="#">Edit →</a>
+      </div>
+      <div class="info-row">
+        <span class="info-row-label">Full Name</span>
+        <span class="info-row-val">{{ request.user.get_full_name|default:"—" }}</span>
+      </div>
+      <div class="info-row">
+        <span class="info-row-label">Email</span>
+        <span class="info-row-val">{{ request.user.email }}</span>
+      </div>
+      <div class="info-row">
+        <span class="info-row-label">Username</span>
+        <span class="info-row-val">{{ request.user.username }}</span>
+      </div>
+      <div class="info-row">
+        <span class="info-row-label">Account Type</span>
+        <span class="info-row-val green">Verified Seller 🌾</span>
+      </div>
+      <div class="info-row">
+        <span class="info-row-label">Seller Status</span>
+        <span class="info-row-val green">Active ✓</span>
+      </div>
+      <div class="info-row">
+        <span class="info-row-label">Member Since</span>
+        <span class="info-row-val">{{ request.user.date_joined|date:"N j, Y"|default:"—" }}</span>
+      </div>
+    </div>
+
+    <!-- MY PRODUCTS -->
+    <div class="info-card rv">
+      <div class="info-card-head">
+        <h3>My Products</h3>
+        <a href="/products/my-products/">View All →</a>
+      </div>
+      {% if seller_products %}
+        {% for product in seller_products %}
+        <div class="info-row">
+          <span class="info-row-label">{{ product.category }}</span>
+          <span class="info-row-val">{{ product.name }} — <span style="color:var(--acid);font-family:var(--mono)">₦{{ product.price }}</span></span>
+        </div>
+        {% endfor %}
+      {% else %}
+        <div class="products-empty">
+          <span class="products-empty-ico">🌾</span>
+          <h4>No products listed yet</h4>
+          <p>Add your first product to start selling to thousands of buyers across Nigeria.</p>
+          <a href="/products/add/" class="btn btn-acid">+ Add Your First Product</a>
+        </div>
+      {% endif %}
+    </div>
+
+    <!-- QUICK ACTIONS -->
+    <div class="section-divider rv"><span>Quick Actions</span></div>
+
+    <div class="quick-actions rv">
+      <a href="/products/add/" class="action-btn cta">
+        <span class="action-btn-ico">➕</span>
+        <span class="action-btn-text">
+          <strong>Add New Product</strong>
+          <span>List fresh produce or supplies</span>
+        </span>
+      </a>
+      <a href="/dashboard/seller/" class="action-btn cta">
+        <span class="action-btn-ico">📊</span>
+        <span class="action-btn-text">
+          <strong>Seller Dashboard</strong>
+          <span>Sales &amp; analytics overview</span>
+        </span>
+      </a>
+      <a href="/products/my-products/" class="action-btn">
+        <span class="action-btn-ico">📦</span>
+        <span class="action-btn-text">
+          <strong>My Products</strong>
+          <span>Edit &amp; manage listings</span>
+        </span>
+      </a>
+      <a href="#" class="action-btn">
+        <span class="action-btn-ico">🧾</span>
+        <span class="action-btn-text">
+          <strong>My Orders</strong>
+          <span>Track &amp; fulfil orders</span>
+        </span>
+      </a>
+      <a href="#" class="action-btn">
+        <span class="action-btn-ico">💰</span>
+        <span class="action-btn-text">
+          <strong>Earnings</strong>
+          <span>Payout history &amp; balance</span>
+        </span>
+      </a>
+      <a href="#" class="action-btn">
+        <span class="action-btn-ico">⟡</span>
+        <span class="action-btn-text">
+          <strong>Apply for Funding</strong>
+          <span>Access AgroMart Invest capital</span>
+        </span>
+      </a>
+      <a href="#" class="action-btn">
+        <span class="action-btn-ico">🌾</span>
+        <span class="action-btn-text">
+          <strong>Farm Profile</strong>
+          <span>Update your public farm page</span>
+        </span>
+      </a>
+      <a href="{% url 'logout' %}" class="action-btn danger">
+        <span class="action-btn-ico">←</span>
+        <span class="action-btn-text">
+          <strong>Log Out</strong>
+          <span>End your session</span>
+        </span>
+      </a>
+    </div>
+
+  </div>
+</div>
 
 {% endblock %}

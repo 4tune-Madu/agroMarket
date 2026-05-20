@@ -1,16 +1,592 @@
 {% extends "base.html" %}
+{% block title %}Admin Profile — AgroMart{% endblock %}
+
+{% block extra_styles %}
+
+/* ─── ADMIN PROFILE ─── */
+.admin-hero {
+  padding: calc(var(--nav-h) + 60px) 52px 0;
+  position: relative;
+  overflow: hidden;
+}
+.admin-hero::before {
+  content: 'ADMIN';
+  position: absolute;
+  top: 60px;
+  right: -20px;
+  font-family: var(--serif);
+  font-size: 11rem;
+  font-weight: 900;
+  color: rgba(255,255,255,.025);
+  letter-spacing: -.04em;
+  pointer-events: none;
+  white-space: nowrap;
+  user-select: none;
+}
+
+.admin-header {
+  display: flex;
+  align-items: center;
+  gap: 28px;
+  margin-bottom: 48px;
+  position: relative;
+  z-index: 1;
+}
+.admin-avatar {
+  width: 80px;
+  height: 80px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, var(--grove), var(--acid));
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 2rem;
+  flex-shrink: 0;
+  box-shadow: 0 0 0 4px rgba(197,241,53,.15), 0 0 0 8px rgba(197,241,53,.06);
+}
+.admin-header-text {}
+.admin-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  padding: 4px 12px;
+  background: rgba(197,241,53,.12);
+  border: 1px solid rgba(197,241,53,.30);
+  border-radius: 100px;
+  font-family: var(--mono);
+  font-size: .65rem;
+  text-transform: uppercase;
+  letter-spacing: .14em;
+  color: var(--acid);
+  margin-bottom: 10px;
+}
+.admin-badge-dot {
+  width: 6px;
+  height: 6px;
+  background: var(--acid);
+  border-radius: 50%;
+  animation: blink 2s ease-in-out infinite;
+}
+@keyframes blink {
+  0%,100%{opacity:1;transform:scale(1)}
+  50%{opacity:.35;transform:scale(.65)}
+}
+.admin-header-text h1 {
+  font-family: var(--serif);
+  font-size: clamp(1.6rem, 3vw, 2.4rem);
+  font-weight: 900;
+  letter-spacing: -.03em;
+  color: var(--text);
+  margin-bottom: 6px;
+}
+.admin-email {
+  font-family: var(--mono);
+  font-size: .78rem;
+  color: var(--t40);
+}
+
+/* ─── CONTENT GRID ─── */
+.admin-grid {
+  display: grid;
+  grid-template-columns: 280px 1fr;
+  gap: 24px;
+  padding: 0 52px 100px;
+  position: relative;
+  z-index: 1;
+}
+
+/* ─── SIDEBAR ─── */
+.admin-sidebar {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.admin-nav-card {
+  background: rgba(255,255,255,.04);
+  border: 1px solid var(--bd);
+  border-radius: var(--r-xl);
+  overflow: hidden;
+}
+.admin-nav-label {
+  font-family: var(--mono);
+  font-size: .63rem;
+  text-transform: uppercase;
+  letter-spacing: .15em;
+  color: var(--t40);
+  padding: 16px 20px 10px;
+}
+.admin-nav-link {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 13px 20px;
+  font-size: .88rem;
+  font-weight: 500;
+  color: var(--t70) !important;
+  text-decoration: none !important;
+  transition: background .2s, color .2s;
+  border-top: 1px solid rgba(255,255,255,.04);
+}
+.admin-nav-link:hover {
+  background: rgba(197,241,53,.07);
+  color: var(--text) !important;
+}
+.admin-nav-link.primary {
+  color: var(--acid) !important;
+}
+.admin-nav-link.primary:hover {
+  background: rgba(197,241,53,.10);
+}
+.admin-nav-link .nav-link-ico {
+  width: 32px;
+  height: 32px;
+  border-radius: var(--r-sm);
+  background: rgba(255,255,255,.06);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: .9rem;
+  flex-shrink: 0;
+  transition: background .2s;
+}
+.admin-nav-link:hover .nav-link-ico {
+  background: rgba(197,241,53,.12);
+}
+.admin-nav-link.primary .nav-link-ico {
+  background: rgba(197,241,53,.12);
+}
+.admin-nav-link .nav-link-arrow {
+  margin-left: auto;
+  font-size: .7rem;
+  color: var(--t40);
+  transition: transform .2s;
+}
+.admin-nav-link:hover .nav-link-arrow {
+  transform: translateX(3px);
+  color: var(--acid);
+}
+
+/* ─── MAIN CONTENT ─── */
+.admin-main {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+/* ─── STAT CARDS ─── */
+.admin-stats {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 16px;
+}
+.stat-card {
+  background: rgba(255,255,255,.04);
+  border: 1px solid var(--bd);
+  border-radius: var(--r-xl);
+  padding: 22px 24px;
+  position: relative;
+  overflow: hidden;
+  transition: border-color .3s, transform .4s var(--expo);
+}
+.stat-card::before {
+  content: '';
+  position: absolute;
+  top: 0; right: 0;
+  width: 60px; height: 60px;
+  background: radial-gradient(circle at top right, rgba(197,241,53,.06), transparent);
+  pointer-events: none;
+}
+.stat-card:hover {
+  border-color: var(--bd-h);
+  transform: translateY(-3px);
+}
+.stat-card-ico {
+  font-size: 1.3rem;
+  margin-bottom: 12px;
+  display: block;
+}
+.stat-card-val {
+  font-family: var(--mono);
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: var(--acid);
+  display: block;
+  margin-bottom: 4px;
+}
+.stat-card-label {
+  font-size: .78rem;
+  color: var(--t40);
+}
+
+/* ─── INFO CARD ─── */
+.info-card {
+  background: rgba(255,255,255,.04);
+  border: 1px solid var(--bd);
+  border-radius: var(--r-xl);
+  overflow: hidden;
+}
+.info-card-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 20px 24px;
+  border-bottom: 1px solid var(--bd);
+}
+.info-card-head h3 {
+  font-weight: 700;
+  font-size: .95rem;
+  color: var(--text);
+}
+.info-card-head span {
+  font-family: var(--mono);
+  font-size: .65rem;
+  color: var(--acid);
+  text-transform: uppercase;
+  letter-spacing: .1em;
+}
+.info-row {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  padding: 15px 24px;
+  border-bottom: 1px solid rgba(255,255,255,.04);
+  transition: background .2s;
+}
+.info-row:last-child { border-bottom: none; }
+.info-row:hover { background: rgba(255,255,255,.03); }
+.info-row-label {
+  font-family: var(--mono);
+  font-size: .7rem;
+  text-transform: uppercase;
+  letter-spacing: .1em;
+  color: var(--t40);
+  width: 120px;
+  flex-shrink: 0;
+}
+.info-row-val {
+  font-size: .88rem;
+  color: var(--text);
+}
+.info-row-val.green { color: var(--acid); }
+
+/* ─── QUICK ACTIONS ─── */
+.quick-actions {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 14px;
+}
+.action-btn {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding: 18px 20px;
+  background: rgba(255,255,255,.04);
+  border: 1px solid var(--bd);
+  border-radius: var(--r-lg);
+  color: var(--t70) !important;
+  text-decoration: none !important;
+  font-size: .88rem;
+  font-weight: 500;
+  transition: background .3s, border-color .3s, transform .35s var(--expo);
+  cursor: none;
+}
+.action-btn:hover {
+  background: rgba(197,241,53,.07);
+  border-color: var(--bd-h);
+  color: var(--text) !important;
+  transform: translateY(-3px);
+}
+.action-btn.danger {
+  color: var(--rust) !important;
+  border-color: rgba(200,92,56,.2);
+}
+.action-btn.danger:hover {
+  background: rgba(200,92,56,.1);
+  border-color: rgba(200,92,56,.4);
+}
+.action-btn-ico {
+  width: 38px;
+  height: 38px;
+  border-radius: var(--r-sm);
+  background: rgba(255,255,255,.06);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1rem;
+  flex-shrink: 0;
+}
+.action-btn:hover .action-btn-ico { background: rgba(197,241,53,.12); }
+.action-btn.danger .action-btn-ico { background: rgba(200,92,56,.1); }
+.action-btn-text strong { display: block; font-size: .88rem; margin-bottom: 2px; }
+.action-btn-text span { font-size: .72rem; color: var(--t40); font-family: var(--mono); }
+
+/* ─── DIVIDER ─── */
+.section-divider {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin: 4px 0;
+}
+.section-divider span {
+  font-family: var(--mono);
+  font-size: .65rem;
+  text-transform: uppercase;
+  letter-spacing: .14em;
+  color: var(--t40);
+  white-space: nowrap;
+}
+.section-divider::before,
+.section-divider::after {
+  content: '';
+  flex: 1;
+  height: 1px;
+  background: var(--bd);
+}
+
+/* ─── RESPONSIVE ─── */
+@media(max-width:900px){
+  .admin-hero, .admin-grid { padding-left: 28px; padding-right: 28px; }
+  .admin-grid { grid-template-columns: 1fr; }
+  .admin-stats { grid-template-columns: 1fr 1fr; }
+  .admin-hero::before { display: none; }
+}
+@media(max-width:600px){
+  .admin-stats { grid-template-columns: 1fr; }
+  .quick-actions { grid-template-columns: 1fr; }
+  .admin-header { flex-direction: column; align-items: flex-start; gap: 16px; }
+}
+
+{% endblock %}
 
 {% block content %}
 
-<h1>Admin Profile 🛡️</h1>
+<!-- ══ ADMIN HERO ══ -->
+<section class="admin-hero">
+  <div class="admin-header rv">
+    <div class="admin-avatar">🛡️</div>
+    <div class="admin-header-text">
+      <div class="admin-badge">
+        <span class="admin-badge-dot"></span>
+        Super Admin · Full Access
+      </div>
+      <h1>Admin Control Panel</h1>
+      <span class="admin-email">{{ request.user.email }}</span>
+    </div>
+  </div>
+</section>
 
-<p>Welcome {{ request.user.email }}</p>
+<!-- ══ MAIN GRID ══ -->
+<div class="admin-grid">
 
-<hr>
+  <!-- SIDEBAR NAV -->
+  <aside class="admin-sidebar rv">
 
-<ul>
-    <li><a href="/dashboard/admin/">Admin Dashboard</a></li>
-    <li><a href="/admin/">Django Admin</a></li>
-</ul>
+    <div class="admin-nav-card">
+      <div class="admin-nav-label">Navigation</div>
 
+      <a href="/dashboard/admin/" class="admin-nav-link primary">
+        <span class="nav-link-ico">📊</span>
+        Admin Dashboard
+        <span class="nav-link-arrow">→</span>
+      </a>
+
+      <a href="/admin/" class="admin-nav-link primary">
+        <span class="nav-link-ico">⚙️</span>
+        Django Admin
+        <span class="nav-link-arrow">→</span>
+      </a>
+    </div>
+
+    <div class="admin-nav-card">
+      <div class="admin-nav-label">Management</div>
+
+      <a href="#" class="admin-nav-link">
+        <span class="nav-link-ico">👥</span>
+        Users
+        <span class="nav-link-arrow">→</span>
+      </a>
+
+      <a href="#" class="admin-nav-link">
+        <span class="nav-link-ico">📦</span>
+        Products
+        <span class="nav-link-arrow">→</span>
+      </a>
+
+      <a href="#" class="admin-nav-link">
+        <span class="nav-link-ico">🧾</span>
+        Orders
+        <span class="nav-link-arrow">→</span>
+      </a>
+
+      <a href="#" class="admin-nav-link">
+        <span class="nav-link-ico">👨‍🌾</span>
+        Farmers
+        <span class="nav-link-arrow">→</span>
+      </a>
+
+      <a href="#" class="admin-nav-link">
+        <span class="nav-link-ico">⟡</span>
+        Investments
+        <span class="nav-link-arrow">→</span>
+      </a>
+    </div>
+
+    <div class="admin-nav-card">
+      <div class="admin-nav-label">Account</div>
+      <a href="{% url 'logout' %}" class="admin-nav-link" style="color:var(--rust) !important">
+        <span class="nav-link-ico" style="background:rgba(200,92,56,.1)">←</span>
+        Log Out
+        <span class="nav-link-arrow">→</span>
+      </a>
+    </div>
+
+  </aside>
+
+  <!-- MAIN CONTENT -->
+  <div class="admin-main">
+
+    <!-- STAT CARDS -->
+    <div class="admin-stats">
+      <div class="stat-card rv">
+        <span class="stat-card-ico">👥</span>
+        <span class="stat-card-val">—</span>
+        <span class="stat-card-label">Total Users</span>
+      </div>
+      <div class="stat-card rv d1">
+        <span class="stat-card-ico">📦</span>
+        <span class="stat-card-val">—</span>
+        <span class="stat-card-label">Active Products</span>
+      </div>
+      <div class="stat-card rv d2">
+        <span class="stat-card-ico">🧾</span>
+        <span class="stat-card-val">—</span>
+        <span class="stat-card-label">Orders Today</span>
+      </div>
+    </div>
+
+    <!-- PROFILE INFO -->
+    <div class="info-card rv">
+      <div class="info-card-head">
+        <h3>Account Information</h3>
+        <span>Admin</span>
+      </div>
+      <div class="info-row">
+        <span class="info-row-label">Email</span>
+        <span class="info-row-val">{{ request.user.email }}</span>
+      </div>
+      <div class="info-row">
+        <span class="info-row-label">Username</span>
+        <span class="info-row-val">{{ request.user.username }}</span>
+      </div>
+      <div class="info-row">
+        <span class="info-row-label">Full Name</span>
+        <span class="info-row-val">{{ request.user.get_full_name|default:"—" }}</span>
+      </div>
+      <div class="info-row">
+        <span class="info-row-label">Role</span>
+        <span class="info-row-val green">Super Admin 🛡️</span>
+      </div>
+      <div class="info-row">
+        <span class="info-row-label">Staff Status</span>
+        <span class="info-row-val green">{% if request.user.is_staff %}Active ✓{% else %}Inactive{% endif %}</span>
+      </div>
+      <div class="info-row">
+        <span class="info-row-label">Last Login</span>
+        <span class="info-row-val">{{ request.user.last_login|date:"N j, Y · g:i A"|default:"—" }}</span>
+      </div>
+      <div class="info-row">
+        <span class="info-row-label">Joined</span>
+        <span class="info-row-val">{{ request.user.date_joined|date:"N j, Y"|default:"—" }}</span>
+      </div>
+    </div>
+
+    <!-- QUICK ACTIONS -->
+    <div class="section-divider rv"><span>Quick Actions</span></div>
+
+    <div class="quick-actions rv">
+      <a href="/dashboard/admin/" class="action-btn">
+        <span class="action-btn-ico">📊</span>
+        <span class="action-btn-text">
+          <strong>Admin Dashboard</strong>
+          <span>Site overview &amp; analytics</span>
+        </span>
+      </a>
+      <a href="/admin/" class="action-btn">
+        <span class="action-btn-ico">⚙️</span>
+        <span class="action-btn-text">
+          <strong>Django Admin</strong>
+          <span>Full database control</span>
+        </span>
+      </a>
+      <a href="#" class="action-btn">
+        <span class="action-btn-ico">👥</span>
+        <span class="action-btn-text">
+          <strong>Manage Users</strong>
+          <span>Approve, ban, edit accounts</span>
+        </span>
+      </a>
+      <a href="#" class="action-btn">
+        <span class="action-btn-ico">📦</span>
+        <span class="action-btn-text">
+          <strong>Manage Products</strong>
+          <span>Review &amp; moderate listings</span>
+        </span>
+      </a>
+      <a href="#" class="action-btn">
+        <span class="action-btn-ico">🧾</span>
+        <span class="action-btn-text">
+          <strong>View All Orders</strong>
+          <span>Track &amp; manage fulfilment</span>
+        </span>
+      </a>
+      <a href="#" class="action-btn">
+        <span class="action-btn-ico">⟡</span>
+        <span class="action-btn-text">
+          <strong>Investments</strong>
+          <span>Monitor farm portfolios</span>
+        </span>
+      </a>
+      <a href="#" class="action-btn">
+        <span class="action-btn-ico">👨‍🌾</span>
+        <span class="action-btn-text">
+          <strong>Verify Farmers</strong>
+          <span>KYC &amp; audit queue</span>
+        </span>
+      </a>
+      <a href="{% url 'logout' %}" class="action-btn danger">
+        <span class="action-btn-ico">←</span>
+        <span class="action-btn-text">
+          <strong>Log Out</strong>
+          <span>End admin session</span>
+        </span>
+      </a>
+    </div>
+
+  </div>
+</div>
+
+{% endblock %}
+
+{% block extra_scripts %}
+<script>
+(()=>{
+  /* Animate stat card values once in view */
+  const statObs = new IntersectionObserver(entries => {
+    entries.forEach(e => {
+      if (e.isIntersecting) {
+        e.target.querySelectorAll('.stat-card-val').forEach((el, i) => {
+          setTimeout(() => {
+            el.style.transition = 'opacity .5s';
+            el.style.opacity = '0';
+            setTimeout(() => { el.style.opacity = '1'; }, 200);
+          }, i * 100);
+        });
+        statObs.unobserve(e.target);
+      }
+    });
+  }, { threshold: .3 });
+  document.querySelectorAll('.admin-stats').forEach(s => statObs.observe(s));
+})();
+</script>
 {% endblock %}

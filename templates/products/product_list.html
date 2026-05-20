@@ -1,45 +1,237 @@
 {% extends "base.html" %}
+{% block title %}Marketplace — AgroMart{% endblock %}
+
+{% block extra_styles %}
+
+/* ─── MARKETPLACE ─── */
+.mkt-hero {
+  padding: calc(var(--nav-h) + 72px) 52px 64px;
+  position: relative; overflow: hidden; text-align: center;
+}
+.mkt-hero::before {
+  content: '';
+  position: absolute; inset: 0;
+  background: radial-gradient(ellipse 75% 55% at 50% 0%,rgba(61,156,71,.07),transparent);
+  pointer-events: none;
+}
+.mkt-hero-inner { position: relative; z-index: 1; max-width: 640px; margin: 0 auto; }
+.mkt-hero-inner h1 {
+  font-family: var(--serif);
+  font-size: clamp(2.6rem,5.5vw,4.2rem);
+  font-weight: 900; letter-spacing: -.04em; line-height: 1.05;
+  margin-bottom: 18px; color: var(--text);
+}
+.mkt-hero-inner h1 em { font-style: italic; color: var(--acid); }
+.mkt-hero-inner p {
+  font-size: 1.05rem; color: var(--t70); line-height: 1.8;
+  max-width: 500px; margin: 0 auto 32px;
+}
+.mkt-hero-badges {
+  display: flex; align-items: center; justify-content: center;
+  gap: 12px; flex-wrap: wrap;
+}
+.mkt-hero-badge {
+  display: inline-flex; align-items: center; gap: 7px;
+  padding: 6px 16px;
+  background: rgba(255,255,255,.06); border: 1px solid var(--bd);
+  border-radius: 100px;
+  font-family: var(--mono); font-size: .68rem; color: var(--t70);
+}
+.mkt-hero-badge.a { border-color: rgba(197,241,53,.25); color: var(--acid); background: var(--acid-dim); }
+
+/* ─── FILTER BAR ─── */
+.mkt-filters {
+  padding: 0 52px 32px;
+  display: flex; align-items: center;
+  justify-content: space-between; flex-wrap: wrap; gap: 14px;
+}
+.mkt-filter-chips { display: flex; gap: 8px; flex-wrap: wrap; }
+.filter-chip {
+  padding: 7px 16px;
+  background: rgba(255,255,255,.06); border: 1px solid var(--bd);
+  border-radius: 100px;
+  font-size: .8rem; color: var(--t70) !important; text-decoration: none !important;
+  cursor: none; transition: all .2s; white-space: nowrap;
+}
+.filter-chip:hover,.filter-chip.active {
+  background: var(--acid-dim); border-color: var(--bd-h); color: var(--acid) !important;
+}
+.mkt-result-count {
+  font-family: var(--mono); font-size: .72rem;
+  color: var(--t40); text-transform: uppercase; letter-spacing: .1em;
+  white-space: nowrap;
+}
+.mkt-result-count strong { color: var(--text); }
+
+/* ─── PRODUCT GRID ─── */
+.mkt-section { padding: 0 52px 100px; }
+.mkt-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 18px;
+}
+
+/* ─── PRODUCT CARD ─── */
+.pcard {
+  background: rgba(255,255,255,.045); border: 1px solid var(--bd);
+  border-radius: var(--r-xl); overflow: hidden; cursor: none;
+  transition: transform .4s var(--expo), border-color .3s, box-shadow .4s;
+}
+.pcard:hover { transform: translateY(-8px); border-color: var(--bd-h); box-shadow: 0 22px 52px rgba(0,0,0,.4); }
+.pcard-img { height: 172px; background-size: cover; background-position: center; position: relative; }
+.pcard-img-placeholder {
+  height: 172px; background: rgba(255,255,255,.05);
+  display: flex; align-items: center; justify-content: center; font-size: 3rem;
+}
+.pcard-img::after {
+  content: ''; position: absolute; inset: 0;
+  background: linear-gradient(to bottom,transparent 55%,rgba(10,22,12,.55));
+}
+.pcard-tag {
+  position: absolute; top: 10px; left: 10px;
+  padding: 4px 10px; background: rgba(13,26,15,.75); backdrop-filter: blur(8px);
+  border-radius: 100px; font-size: .65rem; font-family: var(--mono);
+  color: var(--acid); text-transform: uppercase; letter-spacing: .08em; z-index: 1;
+}
+.pcard-body { padding: 14px 16px; }
+.pcard-origin { font-family: var(--mono); font-size: .63rem; text-transform: uppercase; letter-spacing: .1em; color: var(--t40); margin-bottom: 5px; }
+.pcard-body h4 { font-weight: 600; font-size: .95rem; margin-bottom: 6px; line-height: 1.3; color: var(--text); }
+.pcard-cats { font-size: .72rem; color: var(--t40); margin-bottom: 8px; font-family: var(--mono); }
+.pcard-price-row { display: flex; align-items: center; justify-content: space-between; }
+.pcard-price { font-family: var(--mono); font-size: .92rem; font-weight: 700; color: var(--acid); }
+.pcard-price sub { font-size: .65rem; font-weight: 400; color: var(--t40); font-family: var(--sans); }
+.pcard-foot { padding: 0 16px 16px; }
+.btn-cart {
+  width: 100%; padding: 10px;
+  background: rgba(61,156,71,.13); border: 1px solid rgba(61,156,71,.28);
+  border-radius: var(--r-md); color: var(--leaf);
+  font-family: var(--sans); font-weight: 600; font-size: .82rem; cursor: none;
+  transition: all .22s; display: flex; align-items: center; justify-content: center; gap: 7px;
+  text-decoration: none !important;
+}
+.btn-cart:hover { background: var(--leaf); color: #fff; border-color: transparent; }
+
+/* ─── EMPTY ─── */
+.mkt-empty {
+  grid-column: 1/-1; text-align: center;
+  padding: 80px 24px;
+  background: rgba(255,255,255,.03);
+  border: 1px dashed rgba(255,255,255,.1);
+  border-radius: var(--r-2xl);
+}
+.mkt-empty-ico { font-size: 3rem; margin-bottom: 16px; display: block; opacity: .4; }
+.mkt-empty h3 { font-family: var(--serif); font-size: 1.6rem; font-weight: 900; margin-bottom: 10px; }
+.mkt-empty p { color: var(--t40); font-size: .9rem; line-height: 1.7; margin-bottom: 28px; max-width: 340px; margin-left: auto; margin-right: auto; }
+
+/* ─── RESPONSIVE ─── */
+@media(max-width:1200px){ .mkt-grid { grid-template-columns:repeat(3,1fr); } }
+@media(max-width:900px){
+  .mkt-hero,.mkt-filters,.mkt-section { padding-left:28px;padding-right:28px; }
+  .mkt-grid { grid-template-columns:repeat(2,1fr); }
+}
+@media(max-width:480px){ .mkt-grid { grid-template-columns:1fr; } }
+
+{% endblock %}
 
 {% block content %}
 
-<h1>Marketplace</h1>
+<!-- ══ HERO ══ -->
+<section class="mkt-hero">
+  <div class="mkt-hero-inner">
+    <div class="eyebrow rv">AgroMart Marketplace</div>
+    <h1 class="rv d1">Fresh from <em>Nigeria's</em><br>Finest Farms</h1>
+    <p class="rv d2">Thousands of products. Hundreds of verified farmers. Delivered farm-fresh to your door within 48 hours.</p>
+    <div class="mkt-hero-badges rv d3">
+      <span class="mkt-hero-badge a">✓ Verified Farmers Only</span>
+      <span class="mkt-hero-badge">🚚 48-hr Delivery</span>
+      <span class="mkt-hero-badge">🔒 Secure Checkout</span>
+    </div>
+  </div>
+</section>
 
-<p>Browse fresh agricultural products from farmers 🌾</p>
-
-<hr>
-
-<div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px;">
-
-    {% for product in products %}
-        <div style="border: 1px solid #ccc; padding: 10px;">
-
-            {% if product.image %}
-                <img src="{{ product.image.url }}" width="100%" height="150">
-            {% endif %}
-
-            <h3>{{ product.name }}</h3>
-
-            <p><strong>₦{{ product.price }}</strong></p>
-
-            <p>Seller: {{ product.seller.email }}</p>
-
-            <p>
-                Categories:
-                {% for category in product.categories.all %}
-                    {{ category.name }}{% if not forloop.last %}, {% endif %}
-                {% empty %}
-                    None
-                {% endfor %}
-            </p>
-            <a href="/products/cart/add/{{ product.id }}/">
-    Add to Cart
-</a>
-
-            <button>View Details</button>
-
-        </div>
-    {% endfor %}
-
+<!-- ══ FILTERS ══ -->
+<div class="mkt-filters rv">
+  <div class="mkt-filter-chips">
+    <a href="{% url 'product_list' %}" class="filter-chip active">All Products</a>
+    <a href="{% url 'categories' %}" class="filter-chip">By Category</a>
+    <a href="{% url 'product_search' %}?q=vegetables" class="filter-chip">🥬 Vegetables</a>
+    <a href="{% url 'product_search' %}?q=fish" class="filter-chip">🐟 Fish</a>
+    <a href="{% url 'product_search' %}?q=grains" class="filter-chip">🌾 Grains</a>
+    <a href="{% url 'product_search' %}?q=poultry" class="filter-chip">🐓 Poultry</a>
+  </div>
+  <span class="mkt-result-count"><strong>{{ products|length }}</strong> product{% if products|length != 1 %}s{% endif %} listed</span>
 </div>
 
+<!-- ══ GRID ══ -->
+<section class="mkt-section">
+  <div class="mkt-grid">
+
+    {% for product in products %}
+    <div class="pcard rv" style="transition-delay:{{ forloop.counter0 }}0ms">
+
+      {% if product.image %}
+        <div class="pcard-img" style="background-image:url('{{ product.image.url }}')">
+          {% for cat in product.categories.all %}{% if forloop.first %}<span class="pcard-tag">{{ cat.name }}</span>{% endif %}{% endfor %}
+        </div>
+      {% else %}
+        <div class="pcard-img-placeholder">🌿</div>
+      {% endif %}
+
+      <div class="pcard-body">
+        <div class="pcard-origin">🏪 {{ product.seller.email|truncatechars:28 }}</div>
+        <h4>{{ product.name }}</h4>
+        <div class="pcard-cats">
+          {% for cat in product.categories.all %}{{ cat.name }}{% if not forloop.last %} · {% endif %}{% empty %}Uncategorised{% endfor %}
+        </div>
+        <div class="pcard-price-row">
+          <span class="pcard-price">₦{{ product.price }}{% if product.unit %}<sub> / {{ product.unit }}</sub>{% endif %}</span>
+        </div>
+      </div>
+
+      <div class="pcard-foot">
+        <a href="/products/cart/add/{{ product.id }}/" class="btn-cart">+ Add to Cart</a>
+      </div>
+
+    </div>
+
+    {% empty %}
+    <div class="mkt-empty rv">
+      <span class="mkt-empty-ico">🌾</span>
+      <h3>No products yet</h3>
+      <p>Products will appear here once farmers start listing. Check back soon or register as a seller.</p>
+      <a href="{% url 'register' %}" class="btn btn-green">Become a Seller →</a>
+    </div>
+    {% endfor %}
+
+  </div>
+</section>
+
+{% endblock %}
+
+{% block extra_scripts %}
+<script>
+(()=>{
+  /* Staggered card entrance */
+  const cards = document.querySelectorAll('.pcard');
+  const obs = new IntersectionObserver(entries=>{
+    entries.forEach(e=>{
+      if(e.isIntersecting){ cards.forEach((c,i)=>{ setTimeout(()=>{ c.style.opacity='1'; c.style.transform='translateY(0)'; },i*55); }); obs.disconnect(); }
+    });
+  },{threshold:.05});
+  cards.forEach(c=>{ c.style.opacity='0'; c.style.transform='translateY(20px)'; c.style.transition='opacity .55s var(--expo),transform .55s var(--expo)'; });
+  if(cards.length) obs.observe(cards[0].closest('section'));
+
+  /* Cart feedback */
+  document.querySelectorAll('.btn-cart').forEach(btn=>{
+    btn.addEventListener('click',function(e){
+      if(this.tagName==='A') return;
+      e.preventDefault();
+      this.textContent='✓ Added!';
+      this.style.cssText='background:var(--leaf);color:#fff;border-color:transparent';
+      if(window.toast) window.toast('Added to cart 🛒','Item placed in your basket');
+      setTimeout(()=>{ this.textContent='+ Add to Cart'; this.style.cssText=''; },2000);
+    });
+  });
+})();
+</script>
 {% endblock %}

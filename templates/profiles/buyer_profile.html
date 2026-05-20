@@ -1,17 +1,510 @@
 {% extends "base.html" %}
+{% block title %}My Profile — AgroMart{% endblock %}
+
+{% block extra_styles %}
+
+/* ─── BUYER PROFILE ─── */
+.profile-hero {
+  padding: calc(var(--nav-h) + 60px) 52px 0;
+  position: relative;
+  overflow: hidden;
+}
+.profile-hero::before {
+  content: 'BUYER';
+  position: absolute;
+  top: 60px;
+  right: -20px;
+  font-family: var(--serif);
+  font-size: 11rem;
+  font-weight: 900;
+  color: rgba(255,255,255,.025);
+  letter-spacing: -.04em;
+  pointer-events: none;
+  white-space: nowrap;
+  user-select: none;
+}
+
+.profile-header {
+  display: flex;
+  align-items: center;
+  gap: 28px;
+  margin-bottom: 48px;
+  position: relative;
+  z-index: 1;
+}
+.profile-avatar {
+  width: 80px;
+  height: 80px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, var(--leaf), var(--grove));
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 2rem;
+  flex-shrink: 0;
+  box-shadow: 0 0 0 4px rgba(61,156,71,.15), 0 0 0 8px rgba(61,156,71,.06);
+}
+.profile-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  padding: 4px 12px;
+  background: rgba(61,156,71,.12);
+  border: 1px solid rgba(61,156,71,.30);
+  border-radius: 100px;
+  font-family: var(--mono);
+  font-size: .65rem;
+  text-transform: uppercase;
+  letter-spacing: .14em;
+  color: var(--leaf);
+  margin-bottom: 10px;
+}
+.profile-badge-dot {
+  width: 6px; height: 6px;
+  background: var(--leaf);
+  border-radius: 50%;
+  animation: blink 2s ease-in-out infinite;
+}
+@keyframes blink {
+  0%,100%{opacity:1;transform:scale(1)}
+  50%{opacity:.35;transform:scale(.65)}
+}
+.profile-header-text h1 {
+  font-family: var(--serif);
+  font-size: clamp(1.6rem,3vw,2.4rem);
+  font-weight: 900;
+  letter-spacing: -.03em;
+  color: var(--text);
+  margin-bottom: 6px;
+}
+.profile-email {
+  font-family: var(--mono);
+  font-size: .78rem;
+  color: var(--t40);
+}
+
+/* ─── GRID ─── */
+.profile-grid {
+  display: grid;
+  grid-template-columns: 260px 1fr;
+  gap: 24px;
+  padding: 0 52px 100px;
+  position: relative;
+  z-index: 1;
+}
+
+/* ─── SIDEBAR ─── */
+.profile-sidebar { display: flex; flex-direction: column; gap: 12px; }
+
+.profile-nav-card {
+  background: rgba(255,255,255,.04);
+  border: 1px solid var(--bd);
+  border-radius: var(--r-xl);
+  overflow: hidden;
+}
+.profile-nav-label {
+  font-family: var(--mono);
+  font-size: .63rem;
+  text-transform: uppercase;
+  letter-spacing: .15em;
+  color: var(--t40);
+  padding: 16px 20px 10px;
+}
+.profile-nav-link {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 13px 20px;
+  font-size: .88rem;
+  font-weight: 500;
+  color: var(--t70) !important;
+  text-decoration: none !important;
+  transition: background .2s, color .2s;
+  border-top: 1px solid rgba(255,255,255,.04);
+}
+.profile-nav-link:hover {
+  background: rgba(61,156,71,.07);
+  color: var(--text) !important;
+}
+.profile-nav-link .pnl-ico {
+  width: 32px; height: 32px;
+  border-radius: var(--r-sm);
+  background: rgba(255,255,255,.06);
+  display: flex; align-items: center; justify-content: center;
+  font-size: .9rem; flex-shrink: 0;
+  transition: background .2s;
+}
+.profile-nav-link:hover .pnl-ico { background: rgba(61,156,71,.12); }
+.profile-nav-link .pnl-badge {
+  margin-left: auto;
+  padding: 2px 8px;
+  background: var(--leaf);
+  color: #fff;
+  font-family: var(--mono);
+  font-size: .6rem;
+  font-weight: 700;
+  border-radius: 100px;
+}
+.profile-nav-link .pnl-arrow {
+  margin-left: auto;
+  font-size: .7rem;
+  color: var(--t40);
+  transition: transform .2s, color .2s;
+}
+.profile-nav-link:hover .pnl-arrow { transform: translateX(3px); color: var(--leaf); }
+.profile-nav-link.has-badge .pnl-arrow { display: none; }
+
+/* ─── MAIN ─── */
+.profile-main { display: flex; flex-direction: column; gap: 20px; }
+
+/* ─── SUMMARY CARDS ─── */
+.profile-stats {
+  display: grid;
+  grid-template-columns: repeat(3,1fr);
+  gap: 16px;
+}
+.pstat-card {
+  background: rgba(255,255,255,.04);
+  border: 1px solid var(--bd);
+  border-radius: var(--r-xl);
+  padding: 22px 24px;
+  position: relative;
+  overflow: hidden;
+  transition: border-color .3s, transform .4s var(--expo);
+  cursor: none;
+}
+.pstat-card::after {
+  content: '';
+  position: absolute;
+  top: 0; right: 0;
+  width: 60px; height: 60px;
+  background: radial-gradient(circle at top right,rgba(61,156,71,.07),transparent);
+}
+.pstat-card:hover { border-color: var(--bd-h); transform: translateY(-3px); }
+.pstat-ico { font-size: 1.3rem; margin-bottom: 12px; display: block; }
+.pstat-val {
+  font-family: var(--mono);
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: var(--acid);
+  display: block;
+  margin-bottom: 4px;
+}
+.pstat-label { font-size: .78rem; color: var(--t40); }
+
+/* ─── INFO CARD ─── */
+.info-card {
+  background: rgba(255,255,255,.04);
+  border: 1px solid var(--bd);
+  border-radius: var(--r-xl);
+  overflow: hidden;
+}
+.info-card-head {
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 20px 24px;
+  border-bottom: 1px solid var(--bd);
+}
+.info-card-head h3 { font-weight: 700; font-size: .95rem; color: var(--text); }
+.info-card-head a {
+  font-family: var(--mono);
+  font-size: .65rem;
+  color: var(--acid) !important;
+  text-transform: uppercase;
+  letter-spacing: .1em;
+  text-decoration: none !important;
+  transition: opacity .2s;
+}
+.info-card-head a:hover { opacity: .7; }
+.info-row {
+  display: flex; align-items: center; gap: 16px;
+  padding: 15px 24px;
+  border-bottom: 1px solid rgba(255,255,255,.04);
+  transition: background .2s;
+}
+.info-row:last-child { border-bottom: none; }
+.info-row:hover { background: rgba(255,255,255,.03); }
+.info-row-label {
+  font-family: var(--mono);
+  font-size: .7rem;
+  text-transform: uppercase;
+  letter-spacing: .1em;
+  color: var(--t40);
+  width: 120px; flex-shrink: 0;
+}
+.info-row-val { font-size: .88rem; color: var(--text); }
+.info-row-val.green { color: var(--acid); }
+
+/* ─── ACTION GRID ─── */
+.section-divider {
+  display: flex; align-items: center; gap: 12px; margin: 4px 0;
+}
+.section-divider span {
+  font-family: var(--mono);
+  font-size: .65rem;
+  text-transform: uppercase;
+  letter-spacing: .14em;
+  color: var(--t40);
+  white-space: nowrap;
+}
+.section-divider::before,.section-divider::after {
+  content: ''; flex: 1; height: 1px; background: var(--bd);
+}
+
+.quick-actions { display: grid; grid-template-columns: repeat(2,1fr); gap: 14px; }
+.action-btn {
+  display: flex; align-items: center; gap: 14px;
+  padding: 18px 20px;
+  background: rgba(255,255,255,.04);
+  border: 1px solid var(--bd);
+  border-radius: var(--r-lg);
+  color: var(--t70) !important;
+  text-decoration: none !important;
+  font-size: .88rem; font-weight: 500;
+  transition: background .3s, border-color .3s, transform .35s var(--expo);
+  cursor: none;
+}
+.action-btn:hover {
+  background: rgba(61,156,71,.07);
+  border-color: var(--bd-h);
+  color: var(--text) !important;
+  transform: translateY(-3px);
+}
+.action-btn.danger { color: var(--rust) !important; border-color: rgba(200,92,56,.2); }
+.action-btn.danger:hover { background: rgba(200,92,56,.1); border-color: rgba(200,92,56,.4); }
+.action-btn-ico {
+  width: 38px; height: 38px;
+  border-radius: var(--r-sm);
+  background: rgba(255,255,255,.06);
+  display: flex; align-items: center; justify-content: center;
+  font-size: 1rem; flex-shrink: 0;
+}
+.action-btn:hover .action-btn-ico { background: rgba(61,156,71,.12); }
+.action-btn.danger .action-btn-ico { background: rgba(200,92,56,.1); }
+.action-btn-text strong { display: block; font-size: .88rem; margin-bottom: 2px; }
+.action-btn-text span { font-size: .72rem; color: var(--t40); font-family: var(--mono); }
+
+/* ─── RECENT ORDERS PLACEHOLDER ─── */
+.orders-empty {
+  background: rgba(255,255,255,.03);
+  border: 1px dashed rgba(255,255,255,.1);
+  border-radius: var(--r-xl);
+  padding: 52px 24px;
+  text-align: center;
+}
+.orders-empty-ico { font-size: 2.5rem; margin-bottom: 16px; display: block; opacity: .5; }
+.orders-empty h4 { font-weight: 600; font-size: .95rem; margin-bottom: 8px; color: var(--text); }
+.orders-empty p { font-size: .85rem; color: var(--t40); line-height: 1.7; max-width: 280px; margin: 0 auto 24px; }
+
+/* ─── RESPONSIVE ─── */
+@media(max-width:900px){
+  .profile-hero,.profile-grid { padding-left:28px;padding-right:28px; }
+  .profile-grid { grid-template-columns:1fr; }
+  .profile-stats { grid-template-columns:1fr 1fr; }
+  .profile-hero::before { display:none; }
+}
+@media(max-width:600px){
+  .profile-stats { grid-template-columns:1fr; }
+  .quick-actions { grid-template-columns:1fr; }
+  .profile-header { flex-direction:column;align-items:flex-start;gap:16px; }
+}
+
+{% endblock %}
 
 {% block content %}
 
-<h1>Buyer Profile 👤</h1>
+<!-- ══ HERO ══ -->
+<section class="profile-hero">
+  <div class="profile-header rv">
+    <div class="profile-avatar">👤</div>
+    <div class="profile-header-text">
+      <div class="profile-badge">
+        <span class="profile-badge-dot"></span>
+        Buyer Account
+      </div>
+      <h1>Welcome back, {{ request.user.get_short_name|default:request.user.username }}</h1>
+      <span class="profile-email">{{ request.user.email }}</span>
+    </div>
+  </div>
+</section>
 
-<p>Welcome {{ request.user.email }}</p>
+<!-- ══ GRID ══ -->
+<div class="profile-grid">
 
-<hr>
+  <!-- SIDEBAR -->
+  <aside class="profile-sidebar rv">
 
-<ul>
-    <li><a href="/products/cart/">My Cart</a></li>
-    <li><a href="#">My Orders</a></li>
-    <li><a href="#">Saved Products</a></li>
-</ul>
+    <div class="profile-nav-card">
+      <div class="profile-nav-label">My Shopping</div>
+      <a href="/products/cart/" class="profile-nav-link has-badge">
+        <span class="pnl-ico">🛒</span>
+        My Cart
+        <span class="pnl-badge">{% if cart_count %}{{ cart_count }}{% else %}0{% endif %}</span>
+      </a>
+      <a href="#" class="profile-nav-link">
+        <span class="pnl-ico">🧾</span>
+        My Orders
+        <span class="pnl-arrow">→</span>
+      </a>
+      <a href="#" class="profile-nav-link">
+        <span class="pnl-ico">❤️</span>
+        Saved Products
+        <span class="pnl-arrow">→</span>
+      </a>
+      <a href="#" class="profile-nav-link">
+        <span class="pnl-ico">⭐</span>
+        My Reviews
+        <span class="pnl-arrow">→</span>
+      </a>
+    </div>
+
+    <div class="profile-nav-card">
+      <div class="profile-nav-label">Account</div>
+      <a href="#" class="profile-nav-link">
+        <span class="pnl-ico">✏️</span>
+        Edit Profile
+        <span class="pnl-arrow">→</span>
+      </a>
+      <a href="#" class="profile-nav-link">
+        <span class="pnl-ico">📍</span>
+        Addresses
+        <span class="pnl-arrow">→</span>
+      </a>
+      <a href="#" class="profile-nav-link">
+        <span class="pnl-ico">💳</span>
+        Payment Methods
+        <span class="pnl-arrow">→</span>
+      </a>
+      <a href="{% url 'logout' %}" class="profile-nav-link" style="color:var(--rust)!important">
+        <span class="pnl-ico" style="background:rgba(200,92,56,.1)">←</span>
+        Log Out
+        <span class="pnl-arrow">→</span>
+      </a>
+    </div>
+
+  </aside>
+
+  <!-- MAIN -->
+  <div class="profile-main">
+
+    <!-- STATS -->
+    <div class="profile-stats">
+      <div class="pstat-card rv">
+        <span class="pstat-ico">🧾</span>
+        <span class="pstat-val">0</span>
+        <span class="pstat-label">Total Orders</span>
+      </div>
+      <div class="pstat-card rv d1">
+        <span class="pstat-ico">❤️</span>
+        <span class="pstat-val">0</span>
+        <span class="pstat-label">Saved Items</span>
+      </div>
+      <div class="pstat-card rv d2">
+        <span class="pstat-ico">⭐</span>
+        <span class="pstat-val">0</span>
+        <span class="pstat-label">Reviews Left</span>
+      </div>
+    </div>
+
+    <!-- ACCOUNT INFO -->
+    <div class="info-card rv">
+      <div class="info-card-head">
+        <h3>Account Information</h3>
+        <a href="#">Edit →</a>
+      </div>
+      <div class="info-row">
+        <span class="info-row-label">Full Name</span>
+        <span class="info-row-val">{{ request.user.get_full_name|default:"—" }}</span>
+      </div>
+      <div class="info-row">
+        <span class="info-row-label">Email</span>
+        <span class="info-row-val">{{ request.user.email }}</span>
+      </div>
+      <div class="info-row">
+        <span class="info-row-label">Username</span>
+        <span class="info-row-val">{{ request.user.username }}</span>
+      </div>
+      <div class="info-row">
+        <span class="info-row-label">Account Type</span>
+        <span class="info-row-val green">Buyer ✓</span>
+      </div>
+      <div class="info-row">
+        <span class="info-row-label">Member Since</span>
+        <span class="info-row-val">{{ request.user.date_joined|date:"N j, Y"|default:"—" }}</span>
+      </div>
+    </div>
+
+    <!-- RECENT ORDERS -->
+    <div class="info-card rv">
+      <div class="info-card-head">
+        <h3>Recent Orders</h3>
+        <a href="#">View All →</a>
+      </div>
+      {% if recent_orders %}
+        {% for order in recent_orders %}
+        <div class="info-row">
+          <span class="info-row-label">#{{ order.id }}</span>
+          <span class="info-row-val">{{ order.created_at|date:"N j, Y" }}</span>
+        </div>
+        {% endfor %}
+      {% else %}
+        <div class="orders-empty">
+          <span class="orders-empty-ico">🛒</span>
+          <h4>No orders yet</h4>
+          <p>Your order history will appear here once you make your first purchase.</p>
+          <a href="{% url 'product_list' %}" class="btn btn-green">Browse Products →</a>
+        </div>
+      {% endif %}
+    </div>
+
+    <!-- QUICK ACTIONS -->
+    <div class="section-divider rv"><span>Quick Actions</span></div>
+
+    <div class="quick-actions rv">
+      <a href="/products/cart/" class="action-btn">
+        <span class="action-btn-ico">🛒</span>
+        <span class="action-btn-text">
+          <strong>My Cart</strong>
+          <span>Review items &amp; checkout</span>
+        </span>
+      </a>
+      <a href="#" class="action-btn">
+        <span class="action-btn-ico">🧾</span>
+        <span class="action-btn-text">
+          <strong>My Orders</strong>
+          <span>Track deliveries &amp; history</span>
+        </span>
+      </a>
+      <a href="#" class="action-btn">
+        <span class="action-btn-ico">❤️</span>
+        <span class="action-btn-text">
+          <strong>Saved Products</strong>
+          <span>Your wishlist &amp; favourites</span>
+        </span>
+      </a>
+      <a href="{% url 'product_list' %}" class="action-btn">
+        <span class="action-btn-ico">🌿</span>
+        <span class="action-btn-text">
+          <strong>Browse Shop</strong>
+          <span>Discover fresh produce</span>
+        </span>
+      </a>
+      <a href="#" class="action-btn">
+        <span class="action-btn-ico">📍</span>
+        <span class="action-btn-text">
+          <strong>Delivery Addresses</strong>
+          <span>Manage saved locations</span>
+        </span>
+      </a>
+      <a href="{% url 'logout' %}" class="action-btn danger">
+        <span class="action-btn-ico">←</span>
+        <span class="action-btn-text">
+          <strong>Log Out</strong>
+          <span>End your session</span>
+        </span>
+      </a>
+    </div>
+
+  </div>
+</div>
 
 {% endblock %}
